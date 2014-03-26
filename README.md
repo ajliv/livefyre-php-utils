@@ -1,4 +1,5 @@
 # Livefyre PHP Utility Classes
+[![PHP version](https://badge.fury.io/ph/Livefyre%2Flivefyre-php-utils.png)](http://badge.fury.io/ph/Livefyre%2Flivefyre-php-utils)
 
 Livefyre's official library for common server-side tasks necessary for getting Livefyre apps (comments, reviews, etc.) working on your website.
 
@@ -6,7 +7,7 @@ Works with PHP5.
 
 ## Installation
 
-If using Composer, add this to your composer.json:
+If using Composer (a highly-recommended PHP dependency manager), add this to your composer.json:
 
 	"require": {
         "livefyre/livefyre-php-utils": "1.0.0"
