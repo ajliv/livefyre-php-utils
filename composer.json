@@ -13,11 +13,9 @@
             "role": "Developer"
         }
     ],
-    "require": {
-    	"firebase/php-jwt": "dev-master",
-    	"rmccue/requests": ">=1.0"
-    },
     "require-dev": {
+        "firebase/php-jwt": "dev-master",
+        "rmccue/requests": ">=1.0"
         "phpunit/phpunit": "3.7.14"
     },
     "minimum-stability": "dev",
