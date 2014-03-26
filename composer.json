@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "firebase/php-jwt": "dev-master",
+        "firebase/php-jwt": "*",
         "rmccue/requests": ">=1.0"
     },
     "require-dev": {
