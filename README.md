@@ -16,7 +16,7 @@ If using Composer (a highly-recommended PHP dependency manager), add this to you
 Otherwise you can clone the repo from http://github.com/livefyre/livefyre-php-utils and copy the project into your application.
 
 
-## Usage
+## Import
 
 Either add - 
 ```php
@@ -27,7 +27,7 @@ Or call it explicitly -
 Livefyre\Livefyre::getNetwork("networkName", "networkKey");
 ```
 
-
+## Usage
 
 Creating tokens:
 
