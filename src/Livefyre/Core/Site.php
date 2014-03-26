@@ -1,6 +1,9 @@
 <?php
 namespace Livefyre\Core;
 
+use JWT;
+use Requests;
+
 class Site {
 	private $_networkName;
 	private $_siteId;
@@ -28,12 +31,12 @@ class Site {
 		    "type" => $stream
 		);
 
-		return \JWT::encode($token, $this->_siteKey);
+		return JWT::encode($token, $this->_siteKey);
 	}
 
 	public function getCollectionContent($articleId) {
 		$url = sprintf("http://bootstrap.%s/bs3/%s/%s/%s/init", $this->_networkName, $this->_networkName, $this->_siteId, base64_encode($articleId));
-		$response = \Requests::get($url);
+		$response = Requests::get($url);
 
 		return json_decode($response->body);
 	}

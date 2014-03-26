@@ -22,7 +22,7 @@
     },
     "minimum-stability": "dev",
     "autoload": {
-        "psr-4": {
+        "psr-0": {
             "Livefyre\\": "src/"
         }
     }

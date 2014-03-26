@@ -1,6 +1,9 @@
 <?php
 namespace Livefyre\Core;
 
+use JWT;
+use Requests;
+
 class Network {
 	const DEFAULT_USER = "system";
 	const DEFAULT_EXPIRES = 86400;
@@ -20,7 +23,7 @@ class Network {
 
 		$url = sprintf("http://%s", $this->_networkName);
 		$data = array("actor_token" => $this->buildLfToken(), "pull_profile_url" => $url);
-		$response = \Requests::post($url, array(), $data);
+		$response = Requests::post($url, array(), $data);
 		
 		return $response->status_code == 204;
 	}
@@ -29,7 +32,7 @@ class Network {
 		$data = array("lftoken" => $this->buildLfToken());
 		$url = sprintf("http://%s/api/v3_0/user/%s/refresh", $this->_networkName, $userId);
 
-		$response = \Requests::post($url, array(), $data);
+		$response = Requests::post($url, array(), $data);
 
 		return $response->status_code == 200;
 	}
@@ -50,11 +53,11 @@ class Network {
 		    "expires" => time() + $expires
 		);
 
-		return \JWT::encode($token, $this->_networkKey);
+		return JWT::encode($token, $this->_networkKey);
 	}
 
 	public function validateLivefyreToken($lfToken) {
-		$tokenAttributes = \JWT::decode($lfToken, $this->_networkKey);
+		$tokenAttributes = JWT::decode($lfToken, $this->_networkKey);
 
 		return token_attributes.domain == $this->_network_name
 			&& token_attributes.user_id == DEFAULT_USER

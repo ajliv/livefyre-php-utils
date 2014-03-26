@@ -1,7 +1,7 @@
 <?php
 namespace Livefyre;
 
-use \Livefyre\Core\Network;
+use Livefyre\Core\Network;
 
 class Livefyre { 
     public static function getNetwork($networkName, $networkKey) { 
