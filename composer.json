@@ -1,0 +1,30 @@
+{
+    "name": "livefyre/livefyre-php-utils",
+    "type": "library",
+    "version": "1.0.0",
+    "description": "Livefyre PHP utility classes",
+    "keywords": ["livefyre","api"],
+    "homepage": "http://github.com/livefyre/livefyre-php-utils",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Lee",
+            "email": "daegun@livefyre.com",
+            "homepage": "http://github.com/daegun/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+    	"firebase/php-jwt": "dev-master",
+    	"rmccue/requests": ">=1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.14"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Livefyre\\": "src/"
+        }
+    }
+}
