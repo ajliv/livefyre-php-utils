@@ -18,6 +18,15 @@ Otherwise you can clone the repo from http://github.com/livefyre/livefyre-php-ut
 
 ## Usage
 
+Either add to your code - 
+```php
+use Livefyre\Livefyre;
+```
+Or call it explicitly -
+```php
+Livefyre\Livefyre::getNetwork("networkName", "networkKey");
+```
+
 Creating tokens:
 
 **Livefyre token:**
