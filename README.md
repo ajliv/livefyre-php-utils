@@ -75,6 +75,10 @@ $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "si
 content = $site->getCollectionContent("articleId");
 ```
 
+## Documentation
+
+Located [here](answers.livefyre.com/libraries).
+
 ## Contributing
 
 1. Fork it
