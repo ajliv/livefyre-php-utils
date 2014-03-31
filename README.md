@@ -52,7 +52,7 @@ $network = Livefyre::getNetwork("networkName", "networkKey");
 $network->setUserSyncUrl("url");
 $network->syncUser("userId");
 ```
-        
+
 To retrieve content collection data as a json object from Livefyre:
 
 ```php
