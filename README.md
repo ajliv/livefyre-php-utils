@@ -7,25 +7,11 @@ Works with PHP5.
 
 ## Installation
 
-If using Composer (a highly-recommended PHP dependency manager), add this to your composer.json:
+If using Composer, add this to your composer.json:
 
 	"require": {
         "livefyre/livefyre-php-utils": "1.0.0"
     }
-
-Otherwise you can clone the repo from http://github.com/livefyre/livefyre-php-utils and copy the project into your application.
-
-
-## Import
-
-Either add - 
-```php
-use Livefyre\Livefyre;
-```
-Or call it explicitly -
-```php
-Livefyre\Livefyre::getNetwork("networkName", "networkKey");
-```
 
 ## Usage
 
@@ -34,8 +20,7 @@ Creating tokens:
 **Livefyre token:**
 
 ```php
-$network = Livefyre::getNetwork("networkName", "networkKey");
-$network->buildLfToken();
+Livefyre::getNetwork("networkName", "networkKey")->buildLfToken();
 ```
 
 **User auth token:**
