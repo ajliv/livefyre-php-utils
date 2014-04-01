@@ -27,14 +27,17 @@ Livefyre::getNetwork("networkName", "networkKey")->buildLfToken();
 
 ```php
 $network = Livefyre::getNetwork("networkName", "networkKey");
-$network->buildUserAuthToken("userId", "displayName", double timeTillExpire);
+
+$network->buildUserAuthToken("userId", "displayName", expires);
 ```
 
 **Collection meta token:**
+The 'stream' argument is optional.
 
 ```php
 $network = Livefyre::getNetwork("networkName", "networkKey");
-$site = $network->getSite("siteId", "siteKey")
+$site = $network->getSite("siteId", "siteKey");
+
 $site->buildCollectionMetaToken("title", "articleId", "url", "tags", "stream");
 ```
 
@@ -42,6 +45,7 @@ To validate a Livefyre token:
 
 ```php
 $network = Livefyre::getNetwork("networkName", "networkKey");
+
 $network->validateLivefyreToken("lfToken");
 ```
 
@@ -49,7 +53,8 @@ To send Livefyre a user sync url and then have Livefyre pull user data from that
 
 ```php
 $network = Livefyre::getNetwork("networkName", "networkKey");
-$network->setUserSyncUrl("url");
+
+$network->setUserSyncUrl("url{id}");
 $network->syncUser("userId");
 ```
 
@@ -57,7 +62,8 @@ To retrieve content collection data:
 
 ```php
 $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-content = $site->getCollectionContent("articleId");
+
+$site->getCollectionContent("articleId");
 ```
 
 ## Documentation
