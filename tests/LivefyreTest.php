@@ -6,12 +6,13 @@ use Livefyre\Livefyre;
 class LivefyreTest extends \PHPUnit_Framework_TestCase {
     // public function testAPI() {
     //     $network = Livefyre::getNetwork("networkName", "networkKey");
-    //     $this->assertTrue($network->setUserSyncUrl("something{id}"));
-    //     $this->assertTrue($network->syncUser("system"));
+    //     $this->assertTrue($network->setUserSyncUrl("url/{id}"));
+    //     $this->assertTrue($network->syncUser("username"));
 
     //     $siteId = 0;
     //     $site = Livefyre::getNetwork("networkName", "networkKey")->getSite($siteId, $siteSecret);
-    //     var_dump($site->getCollectionContent(584));
+    //     print($site->getCollectionId(articleId));
+    //     var_dump($site->getCollectionContent(articleId));
     // }
 
 	/**
@@ -37,7 +38,7 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
 	 */
     public function testNetworkValidateLivefyreToken() {
         $network = Livefyre::getNetwork("networkName", "networkKey");
-        $network->validateLivefyreToken($network->buildLfToken());
+        $network->validateLivefyreToken($network->buildLivefyreToken());
     }
 
 	/**
@@ -56,5 +57,10 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
     public function testSiteBuildCollectionMetaToken_badTitle() {
     	$site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
     	$site->buildCollectionMetaToken("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "url", "tags");
+    }
+
+    public function testSiteBuildCollectionMetaToken() {
+        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
+        $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags", "reviews");
     }
 }

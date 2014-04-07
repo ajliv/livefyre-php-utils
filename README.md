@@ -15,55 +15,60 @@ If using Composer, add this to your composer.json:
 
 ## Usage
 
-Creating tokens:
-
-**Livefyre token:**
-
-```php
-Livefyre::getNetwork("networkName", "networkKey")->buildLfToken();
-```
-
-**User auth token:**
+Instantiating a network object:
 
 ```php
 $network = Livefyre::getNetwork("networkName", "networkKey");
+```
 
+Building a Livefyre token:
+
+```php
+$network->buildLivefyreToken();
+```
+
+Building a user auth token:
+
+```php
 $network->buildUserAuthToken("userId", "displayName", expires);
-```
-
-**Collection meta token:**
-The 'stream' argument is optional.
-
-```php
-$network = Livefyre::getNetwork("networkName", "networkKey");
-$site = $network->getSite("siteId", "siteKey");
-
-$site->buildCollectionMetaToken("title", "articleId", "url", "tags", "stream");
 ```
 
 To validate a Livefyre token:
 
 ```php
-$network = Livefyre::getNetwork("networkName", "networkKey");
-
 $network->validateLivefyreToken("lfToken");
 ```
 
 To send Livefyre a user sync url and then have Livefyre pull user data from that url:
 
 ```php
-$network = Livefyre::getNetwork("networkName", "networkKey");
-
-$network->setUserSyncUrl("url{id}");
+$network->setUserSyncUrl("urlTemplate");
 $network->syncUser("userId");
+```
+
+Instantiating a site object:
+
+```php
+$site = $network->getSite("siteId", "siteKey");
+```
+
+Building a collection meta token:
+*The 'tags' and stream' arguments are optional.*
+
+```php
+$site->buildCollectionMetaToken("title", "articleId", "url", "tags", "stream");
 ```
 
 To retrieve content collection data:
 
 ```php
-$site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-
 $site->getCollectionContent("articleId");
+```
+
+To get a content collection's id:
+
+```php
+$site->getCollectionId("articleId");
 ```
 
 ## Documentation
