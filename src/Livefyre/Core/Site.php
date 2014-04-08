@@ -26,17 +26,26 @@ class Site {
 		$collectionMeta = array(
 		    "url" => $url,
 		    "tags" => $tags,
-		    "title" => $title
+		    "title" => $title,
+		    "articleId" => $articleId
 		);
-		$metaString = sprintf('{"url":"%s","tags":"%s","title":"%s"}', $url, $tags, $title);
-		$checksum = md5($metaString);
-
-		$collectionMeta['checksum'] = $checksum;
-		$collectionMeta['articleId'] = $articleId;
 		if (!empty($stream)) {
 			$collectionMeta['type'] = $stream;
 		}
+
 		return JWT::encode($collectionMeta, $this->_siteKey);
+	}
+
+	public function buildChecksum($title, $url, $tags = "") {
+		if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+			throw new \InvalidArgumentException("provided url is not a valid url");
+		}
+		if (strlen($title) > 255) {
+			throw new \InvalidArgumentException("title length should be under 255 char");
+		}
+
+		$metaString = sprintf('{"url":"%s","tags":"%s","title":"%s"}', $url, $tags, $title);
+		return md5($metaString);
 	}
 
 	public function getCollectionContent($articleId) {

@@ -1,4 +1,6 @@
-=== 1.0.0 2014-04-07
+=== 1.1.1 2014-04-08
+
+* Moved build checksum into its own method.
 
 * Added getCollectionId method and added checksum to collection meta token.
 

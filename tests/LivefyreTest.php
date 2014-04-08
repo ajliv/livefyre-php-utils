@@ -56,11 +56,36 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
 	 */
     public function testSiteBuildCollectionMetaToken_badTitle() {
     	$site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-    	$site->buildCollectionMetaToken("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "url", "tags");
+    	$site->buildCollectionMetaToken("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com", "tags");
     }
 
     public function testSiteBuildCollectionMetaToken() {
         $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
         $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags", "reviews");
+    }
+
+    /**
+     * @covers Livefyre::getNetwork->getSite->buildChecksum()
+     * @expectedException InvalidArgumentException
+     */
+    public function testSiteBuildChecksum_badUrl() {
+        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
+        $site->buildChecksum("title", "url", "tags");
+    }
+
+    /**
+     * @covers Livefyre::getNetwork->getSite->buildChecksum()
+     * @expectedException InvalidArgumentException
+     */
+    public function testSiteBuildChecksum_badTitle() {
+        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
+        $site->buildChecksum("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "http://www.url.com", "tags");
+    }
+
+    public function testSiteBuildChecksum() {
+        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
+        $checksum = $site->buildChecksum("title", "https://www.url.com", "tags");
+
+        $this->assertEquals("6e2e4faf7b95f896260fe695eafb34ba", $checksum);
     }
 }

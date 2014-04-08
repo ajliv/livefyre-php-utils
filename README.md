@@ -59,6 +59,13 @@ Building a collection meta token:
 $site->buildCollectionMetaToken("title", "articleId", "url", "tags", "stream");
 ```
 
+Building a checksum:
+*The 'tags' argument is optional.*
+
+```php
+$site->buildChecksum("title", "url", "tags");
+```
+
 To retrieve content collection data:
 
 ```php
