@@ -16,7 +16,7 @@ class Site {
 	}
 
 	public function buildCollectionMetaToken($title, $articleId, $url, $tags = "", $stream = null) {
-		if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+		if (filter_var(idn_to_ascii($url), FILTER_VALIDATE_URL) === false) {
 			throw new \InvalidArgumentException("provided url is not a valid url");
 		}
 		if (strlen($title) > 255) {
@@ -37,7 +37,7 @@ class Site {
 	}
 
 	public function buildChecksum($title, $url, $tags = "") {
-		if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+		if (filter_var(idn_to_ascii($url), FILTER_VALIDATE_URL) === false) {
 			throw new \InvalidArgumentException("provided url is not a valid url");
 		}
 		if (strlen($title) > 255) {

@@ -59,9 +59,9 @@ class Network {
 	public function validateLivefyreToken($lfToken) {
 		$tokenAttributes = JWT::decode($lfToken, $this->_networkKey);
 
-		return token_attributes.domain == $this->_network_name
-			&& token_attributes.user_id == DEFAULT_USER
-			&& token_attributes.expires >= time();
+		return $tokenAttributes->domain == $this->_networkName
+			&& $tokenAttributes->user_id == self::DEFAULT_USER
+			&& $tokenAttributes->expires >= time();
 	}
 
 	public function getSite($siteId, $siteKey) {

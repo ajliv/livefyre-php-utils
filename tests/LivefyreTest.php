@@ -88,4 +88,16 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertEquals("6e2e4faf7b95f896260fe695eafb34ba", $checksum);
     }
+
+    public function testSiteValidUrls() {
+        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
+
+        $site->buildChecksum("", "http://test.com:8000", "");
+        $site->buildChecksum("", "http://test.com", "");
+        $site->buildChecksum("", "https://test.com/", "");
+        $site->buildChecksum("", "ftp://test.com/", "");
+        $site->buildChecksum("", "http://清华大学.cn", "");
+        $site->buildChecksum("", "http://www.mysite.com/myresumé.html", "");
+        $site->buildChecksum("", "https://test.com/path/test.-_~!$&'()*+,=:@/dash", "");
+    }
 }
