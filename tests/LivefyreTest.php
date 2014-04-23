@@ -1,6 +1,7 @@
 <?php
 namespace Livefyre\Test;
 
+use JWT;
 use Livefyre\Livefyre;
 
 class LivefyreTest extends \PHPUnit_Framework_TestCase {
@@ -59,9 +60,32 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
     	$site->buildCollectionMetaToken("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com", "tags");
     }
 
+    /**
+     * @covers Livefyre::getNetwork->getSite->buildCollectionMetaToken()
+     * @expectedException InvalidArgumentException
+     */
+    public function testSiteBuildCollectionMetaToken_badType() {
+        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
+        $site->buildCollectionMetaToken("title", "articleId", "http://livefyre.com", "tags", "badType");
+    }
+
     public function testSiteBuildCollectionMetaToken() {
         $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-        $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags", "reviews");
+        $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags");
+    }
+
+    public function testSiteBuildCollectionMetaToken_goodScenarios() {
+        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
+        
+        $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags", "reviews");
+        $decoded = JWT::decode($token, "siteSecret");
+
+        $this->assertEquals("reviews", $decoded->{"type"});
+
+        $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags", "liveblog");
+        $decoded = JWT::decode($token, "siteSecret");
+
+        $this->assertEquals("liveblog", $decoded->{"stream_type"});
     }
 
     /**

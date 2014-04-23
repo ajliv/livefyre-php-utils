@@ -10,7 +10,7 @@ Works with PHP5.
 If using Composer, add this to your composer.json:
 
 	"require": {
-        "livefyre/livefyre-php-utils": "1.1.2"
+        "livefyre/livefyre-php-utils": "1.1.3"
     }
 
 ## Usage

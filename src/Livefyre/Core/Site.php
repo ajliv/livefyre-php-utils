@@ -9,13 +9,16 @@ class Site {
 	private $_siteId;
 	private $_siteKey;
 
+	private static $TYPE = array("reviews", "sidenotes");
+	private static $STREAM_TYPE = array("liveblog", "livechat", "livecomments");
+
 	public function __construct($networkName, $siteId, $siteKey) {
 		$this->_networkName = $networkName;
 		$this->_siteId = $siteId;
 		$this->_siteKey = $siteKey;
 	}
 
-	public function buildCollectionMetaToken($title, $articleId, $url, $tags = "", $stream = null) {
+	public function buildCollectionMetaToken($title, $articleId, $url, $tags = "", $type = null) {
 		if (filter_var(idn_to_ascii($url), FILTER_VALIDATE_URL) === false) {
 			throw new \InvalidArgumentException("provided url is not a valid url");
 		}
@@ -29,8 +32,15 @@ class Site {
 		    "title" => $title,
 		    "articleId" => $articleId
 		);
-		if (!empty($stream)) {
-			$collectionMeta['type'] = $stream;
+
+		if (!empty($type)) {
+			if (in_array($type, self::$TYPE)) {
+				$collectionMeta["type"] = $type;
+			} else if (in_array($type, self::$STREAM_TYPE)) {
+				$collectionMeta["stream_type"] = $type;
+			} else {
+				throw new \InvalidArgumentException("type is not a recognized type. must be liveblog, livechat, livecomments, reviews, sidenotes, or an empty string");
+			}
 		}
 
 		return JWT::encode($collectionMeta, $this->_siteKey);
@@ -57,6 +67,6 @@ class Site {
 
 	public function getCollectionId($articleId) {
 		$content = $this->getCollectionContent($articleId);
-		return $content->{'collectionSettings'}->{'collectionId'};
+		return $content->{"collectionSettings"}->{"collectionId"};
 	}
 }
