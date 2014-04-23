@@ -53,10 +53,10 @@ $site = $network->getSite("siteId", "siteKey");
 ```
 
 Building a collection meta token:
-*The 'tags' and stream' arguments are optional.*
+*The 'tags' and type' arguments are optional.*
 
 ```php
-$site->buildCollectionMetaToken("title", "articleId", "url", "tags", "stream");
+$site->buildCollectionMetaToken("title", "articleId", "url", "tags", "type");
 ```
 
 Building a checksum:
