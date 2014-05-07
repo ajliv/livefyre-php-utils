@@ -85,7 +85,7 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
         $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags", "liveblog");
         $decoded = JWT::decode($token, "siteSecret");
 
-        $this->assertEquals("liveblog", $decoded->{"stream_type"});
+        $this->assertEquals("liveblog", $decoded->{"type"});
     }
 
     /**

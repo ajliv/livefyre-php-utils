@@ -9,8 +9,8 @@ class Site {
 	private $_siteId;
 	private $_siteKey;
 
-	private static $TYPE = array("reviews", "sidenotes");
-	private static $STREAM_TYPE = array("liveblog", "livechat", "livecomments");
+	private static $TYPE = array(
+		"reviews", "sidenotes", "ratings", "counting", "liveblog", "livechat", "livecomments");
 
 	public function __construct($networkName, $siteId, $siteKey) {
 		$this->_networkName = $networkName;
@@ -36,8 +36,6 @@ class Site {
 		if (!empty($type)) {
 			if (in_array($type, self::$TYPE)) {
 				$collectionMeta["type"] = $type;
-			} else if (in_array($type, self::$STREAM_TYPE)) {
-				$collectionMeta["stream_type"] = $type;
 			} else {
 				throw new \InvalidArgumentException("type is not a recognized type. must be liveblog, livechat, livecomments, reviews, sidenotes, or an empty string");
 			}
