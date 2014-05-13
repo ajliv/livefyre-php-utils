@@ -1,4 +1,6 @@
-=== 1.1.4 2014-05-07
+=== 1.1.5 2014-05-13
+
+* Bug fix for setUserSyncUrl.
 
 * Added rating, counting as acceptable types. Removed stream_type.
 
