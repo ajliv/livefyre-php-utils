@@ -22,7 +22,7 @@ class Network {
 		}
 
 		$url = sprintf("http://%s", $this->_networkName);
-		$data = array("actor_token" => $this->buildLivefyreToken(), "pull_profile_url" => $url);
+		$data = array("actor_token" => $this->buildLivefyreToken(), "pull_profile_url" => $urlTemplate);
 		$response = Requests::post($url, array(), $data);
 		
 		return $response->status_code == 204;
