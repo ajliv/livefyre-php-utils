@@ -2,14 +2,26 @@
 
 * Bug fix for setUserSyncUrl.
 
-* Added rating, counting as acceptable types. Removed stream_type.
+=== 1.1.4 2014-05-07
 
-* Renaming stream to type and adding checks to make sure that type is of a recognized type. Adding legacy stream_type support.
+* Added rating, counting as acceptable types.
+* Removed stream_type.
 
-* Fixed validateLivefyreToken and adjusted collectionMetaToken to allow IDNs.
+=== 1.1.3 2014-04-23
+
+* Renaming stream to type.
+* Added checks to make sure that type is of a recognized type.
+* Added legacy stream_type support.
+
+=== 1.1.2 2014-04-10
+
+* Fixed validateLivefyreToken.
+* Adjusted collectionMetaToken to allow IDNs.
+
+=== 1.1.1 2014-04-08
 
 * Moved build checksum into its own method.
 
-* Added getCollectionId method and added checksum to collection meta token.
+=== 1.0.0 2014-04-07
 
 * Initial commit.
