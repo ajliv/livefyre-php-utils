@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "firebase/php-jwt": "*",
+        "firebase/php-jwt": "@dev",
         "rmccue/requests": ">=1.0",
         "ext-intl" : "*"
     },
