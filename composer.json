@@ -22,7 +22,6 @@
         "phpunit/phpunit": "3.7.14",
         "phpdocumentor/phpdocumentor": "2.*"
     },
-    "minimum-stability": "dev",
     "autoload": {
         "psr-0": {
             "Livefyre\\": "src/"
