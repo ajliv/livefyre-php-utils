@@ -1,7 +1,7 @@
 {
     "name": "livefyre/livefyre-php-utils",
     "type": "library",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "description": "Livefyre PHP utility classes",
     "keywords": ["livefyre","api"],
     "homepage": "http://github.com/livefyre/livefyre-php-utils",
