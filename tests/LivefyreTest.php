@@ -1,7 +1,7 @@
 <?php
 namespace Livefyre\Test;
 
-use JWT;
+use Livefyre\Core\Utils\JWT;
 use Livefyre\Livefyre;
 
 class LivefyreTest extends \PHPUnit_Framework_TestCase {

@@ -1,7 +1,7 @@
 <?php
 namespace Livefyre\Core;
 
-use JWT;
+use Livefyre\Core\Utils\JWT;
 use Requests;
 
 class Network {
