@@ -2,6 +2,7 @@
 namespace Livefyre\Core;
 
 use Livefyre\Core\Utils\JWT;
+use Livefyre\Core\Utils\IDNA;
 use Requests;
 
 class Site {
@@ -16,10 +17,11 @@ class Site {
 		$this->_networkName = $networkName;
 		$this->_siteId = $siteId;
 		$this->_siteKey = $siteKey;
+		$this->_IDN = new IDNA(array('idn_version' => 2008));
 	}
 
 	public function buildCollectionMetaToken($title, $articleId, $url, $tags = "", $type = null) {
-		if (filter_var(idn_to_ascii($url), FILTER_VALIDATE_URL) === false) {
+		if (filter_var($this->_IDN->encode($url), FILTER_VALIDATE_URL) === false) {
 			throw new \InvalidArgumentException("provided url is not a valid url");
 		}
 		if (strlen($title) > 255) {
@@ -45,7 +47,7 @@ class Site {
 	}
 
 	public function buildChecksum($title, $url, $tags = "") {
-		if (filter_var(idn_to_ascii($url), FILTER_VALIDATE_URL) === false) {
+		if (filter_var($this->_IDN->encode($url), FILTER_VALIDATE_URL) === false) {
 			throw new \InvalidArgumentException("provided url is not a valid url");
 		}
 		if (strlen($title) > 255) {
