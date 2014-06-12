@@ -1,6 +1,11 @@
+=== 1.2.0 2014-06-12
+
+* Added personalized stream API support.
+* Reorganized the library structure for consistency between different languages.
+
 === 1.1.8 2014-06-11
 
-* Using IDNA class to encode UTF-8 characters so that dependency on ext-intl is no longer required.
+* Used IDNA class to encode UTF-8 characters so that dependency on ext-intl is no longer required.
 
 === 1.1.7 2014-06-10
 

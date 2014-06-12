@@ -1,7 +1,8 @@
 <?php
 namespace Livefyre\Core;
 
-use Livefyre\Core\Utils\JWT;
+use Livefyre\Utils\JWT;
+use Livefyre\Api\PersonalizedStreams;
 use Requests;
 
 class Network {
@@ -64,7 +65,47 @@ class Network {
 			&& $tokenAttributes->expires >= time();
 	}
 
+	/* Topics */
+	public function getTopic($id) {
+		return PersonalizedStreams::getTopic($this, $id);
+	}
+	public function addOrUpdateTopic($topic) {
+		return PersonalizedStreams::addOrUpdateTopic($this, $topic);
+	}
+	public function deleteTopic($id) {
+		return PersonalizedStreams::deleteTopic($this, $id);
+	}
+
+	public function getTopics($limit = 100, $offset = 0) {
+		return PersonalizedStreams::getTopics($this, $limit, $offset);
+	}
+	public function addOrUpdateTopics($topics) {
+		return PersonalizedStreams::addOrUpdateTopics($this, $topics);
+	}
+	public function deleteTopics($ids) {
+		return PersonalizedStreams::deleteTopics($this, $ids);
+	}
+
+	/* User Subscriptions */
+	public static function getUserSubscriptions($userId) {
+		return PersonalizedStreams::getUserSubscriptions($this, $userId);
+	}
+	public static function addUserSubscriptions($userId, $topics) {
+		return PersonalizedStreams::addUserSubscriptions($this, $userId, $topics);
+	}
+	public static function updateUserSubscriptions($userId, $topics) {
+		return PersonalizedStreams::updateUserSubscriptions($this, $userId, $topics);
+	}
+	public static function deleteUserSubscriptions($userId, $topics) {
+		return PersonalizedStreams::deleteUserSubscriptions($this, $userId, $topics);
+	}
+
+	/* Getters */
 	public function getSite($siteId, $siteKey) {
-		return new Site($this->_networkName, $siteId, $siteKey);
+		return new Site($this, $siteId, $siteKey);
+	}
+
+	public function getName() {
+		return $this->_networkName;
 	}
 }
