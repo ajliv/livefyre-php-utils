@@ -194,7 +194,7 @@ class PersonalizedStreams {
 			} else {
 				$path = $this->_NETWORK_TOPICs_URL_PATH;
 			}
-		} else (get_class($obj) == "Site") {
+		} elseif (get_class($obj) == "Site") {
 			$base = sprintf($this->_BASE_URL, $obj->getNetworkName());
 
 			if (isset($id)) {
