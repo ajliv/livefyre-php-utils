@@ -21,34 +21,14 @@ class PersonalizedStreams {
 		return $this::marshallJsonToTopic(json_decode($response->body)->{"topic"});
 	}
 
+	// convenience method
 	public static function addOrUpdateTopic($obj, $topic) {
-		if (strlen($topic->getLabel()) > 128 || empty($topic->getLabel())) {
-			throw new \InvalidArgumentException("topic label should be 128 char or under");
-		}
-
-		$data = json_encode(array("topic" => $topic));
-		$headers = array(
-			"Authorization" => "lftoken " + $obj->buildLivefyreToken(),
-			"Content-Type" => "application/json"
-		);
-		$response = Requests::post($this::getUrl($obj, $id), $headers, $data);
-		
-		$date = json_decode($response->body)->{"updated"};
-
-		$topic->setModifiedAt($date);
-
-		if (!isset($topic->getCreatedAt())) {
-			$topic->setCreatedAt($date);
-		}
-
-		return json_decode($response->body);
+		return array_shift(array_values($this::addOrUpdateTopics($obj, array($topic))));
 	}
 
+	// convenience method
 	public static function deleteTopic($obj, $id) {
-		$headers = array("Authorization" => "lftoken " + $obj->buildLivefyreToken());
-		$response = Requests::delete($this::getUrl($obj, $id), $headers, $data);
-		
-		return json_decode($response->body)->{"deleted"} == 1;
+		return $this::deleteTopics($obj, array($id))->{"deleted"} == 1;
 	}
 
 	/* Multiple Topic API */
