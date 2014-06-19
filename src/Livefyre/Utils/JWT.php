@@ -1,5 +1,5 @@
 <?php
-namespace Livefyre\Core\Utils;
+namespace Livefyre\Utils;
 /**
  * JSON Web Token implementation, based on this spec:
  * http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-06
