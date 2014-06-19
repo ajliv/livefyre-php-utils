@@ -3,22 +3,23 @@ namespace Livefyre\Core;
 
 use Livefyre\Utils\JWT;
 use Livefyre\Utils\IDNA;
+use Livefyre\Routing\Client;
 use Livefyre\Api\PersonalizedStreams;
-use Requests;
+use Livefyre\Api\Entity\Topic;
 
 class Site {
 	private $_network;
-	private $_siteId;
-	private $_siteKey;
+	private $_id;
+	private $_key;
 	private $_IDNA;
 
 	private static $TYPE = array(
 		"reviews", "sidenotes", "ratings", "counting", "liveblog", "livechat", "livecomments");
 
-	public function __construct($network, $siteId, $siteKey) {
+	public function __construct($network, $id, $key) {
 		$this->_network = $network;
-		$this->_siteId = $siteId;
-		$this->_siteKey = $siteKey;
+		$this->_id = $id;
+		$this->_key = $key;
 		$this->_IDNA = new IDNA(array('idn_version' => 2008));
 	}
 
@@ -45,7 +46,7 @@ class Site {
 			}
 		}
 
-		return JWT::encode($collectionMeta, $this->_siteKey);
+		return JWT::encode($collectionMeta, $this->_key);
 	}
 
 	public function buildChecksum($title, $url, $tags = "") {
@@ -61,8 +62,8 @@ class Site {
 	}
 
 	public function getCollectionContent($articleId) {
-		$url = sprintf("http://bootstrap.%s/bs3/%s/%s/%s/init", $this->_network->_networkName, $this->_network->_networkName, $this->_siteId, base64_encode($articleId));
-		$response = Requests::get($url);
+		$url = sprintf("http://bootstrap.%s/bs3/%s/%s/%s/init", $this->_network->_networkName, $this->_network->_networkName, $this->_id, base64_encode($articleId));
+		$response = Client::GET($url);
 
 		return json_decode($response->body);
 	}
@@ -76,50 +77,59 @@ class Site {
 	public function getTopic($id) {
 		return PersonalizedStreams::getTopic($this, $id);
 	}
-	public function addOrUpdateTopic($topic) {
-		return PersonalizedStreams::addOrUpdateTopic($this, $topic);
+	public function createOrUpdateTopic($id, $label) {
+		$topic = Topic::generate($this, $id, $label);
+
+		return PersonalizedStreams::postTopic($this, $topic);
 	}
-	public function deleteTopic($id) {
-		return PersonalizedStreams::deleteTopic($this, $id);
+	public function deleteTopic($topic) {
+		return PersonalizedStreams::patchTopic($this, $topic);
 	}
 
 	public function getTopics($limit = 100, $offset = 0) {
 		return PersonalizedStreams::getTopics($this, $limit, $offset);
 	}
-	public function addOrUpdateTopics($topics) {
-		return PersonalizedStreams::addOrUpdateTopics($this, $topics);
+	public function createOrUpdateTopics($topicMap) {
+		$topics = array();
+		foreach ($topicMap as $id => $label) {
+		    array_push($topics, Topic::generate($this, $id, $label));
+		}
+		return PersonalizedStreams::postTopics($this, $topics);
 	}
-	public function deleteTopics($ids) {
-		return PersonalizedStreams::deleteTopics($this, $ids);
+	public function deleteTopics($topics) {
+		return PersonalizedStreams::patchTopics($this, $topics);
 	}
 
 	public function getCollectionTopics($collectionId) {
 		return PersonalizedStreams::getCollectionTopics($this, $collectionId);
 	}
 	public function addCollectionTopics($collectionId, $topics) {
-		return PersonalizedStreams::addCollectionTopics($this, $collectionId, $topics);
+		return PersonalizedStreams::postCollectionTopics($this, $collectionId, $topics);
 	}
 	public function updateCollectionTopics($collectionId, $topics) {
-		return PersonalizedStreams::updateCollectionTopics($this, $collectionId, $topics);
+		return PersonalizedStreams::putCollectionTopics($this, $collectionId, $topics);
 	}
-	public function deleteCollectionTopics($collectionId, $topics) {
-		return PersonalizedStreams::deleteCollectionTopics($this, $collectionId, $topics);
+	public function removeCollectionTopics($collectionId, $topics) {
+		return PersonalizedStreams::patchCollectionTopics($this, $collectionId, $topics);
 	}
 
 	/* Getters */
-	public function getId() {
-		return $this->_siteId;
+	public function getUrn() {
+		return $this->_network->getUrn() . ":site=" . $this->_id;
 	}
-
+	public function getNetworkName() {
+		return $this->_network->getNetworkName();
+	}
+	public function buildLivefyreToken() {
+		return $this->getNetwork()->buildLivefyreToken();
+	}
 	public function getNetwork() {
 		return $this->_network;
 	}
-
-	public function getNetworkName() {
-		return $this->getNetwork()->getName();
+	public function getId() {
+		return $this->_id;
 	}
-
-	public function buildLivefyreToken() {
-		return $this->getNetwork()->buildLivefyreToken();
+	public function getKey() {
+		return $this->_key;
 	}
 }

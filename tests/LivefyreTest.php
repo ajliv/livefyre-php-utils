@@ -5,13 +5,20 @@ use Livefyre\Utils\JWT;
 use Livefyre\Livefyre;
 
 class LivefyreTest extends \PHPUnit_Framework_TestCase {
-    // public function testAPI() {
-    //     $network = Livefyre::getNetwork("networkName", "networkKey");
+
+    const NETWORK_NAME = "<NETWORK-NAME>";
+    const NETWORK_KEY = "<NETWORK-KEY>";
+    const SITE_ID = "<SITE-ID>";
+    const SITE_KEY = "<SITE-KEY>";
+    const COLLECTION_ID = "<COLLECTION-ID>";
+    const ARTICLE_ID = "<ARTICLE-ID>";
+
+    // public function testApi() {
+    //     $network = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY);
     //     $this->assertTrue($network->setUserSyncUrl("url/{id}"));
     //     $this->assertTrue($network->syncUser("username"));
 
-    //     $siteId = 0;
-    //     $site = Livefyre::getNetwork("networkName", "networkKey")->getSite($siteId, $siteSecret);
+    //     $site = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY)->getSite(self::SITE_ID, $siteSecret);
     //     print($site->getCollectionId(articleId));
     //     var_dump($site->getCollectionContent(articleId));
     // }
@@ -21,7 +28,7 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
 	 * @expectedException InvalidArgumentException
 	 */
     public function testNetworkUserSyncUrl() {
-        $network = Livefyre::getNetwork("networkName", "networkKey");
+        $network = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY);
         $network->setUserSyncUrl("www.test.com");
     }
 
