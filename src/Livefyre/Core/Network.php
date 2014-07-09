@@ -2,9 +2,10 @@
 namespace Livefyre\Core;
 
 use Livefyre\Utils\JWT;
-use Livefyre\Api\PersonalizedStreams;
+use Livefyre\Api\PersonalizedStreamsClient;
 use Livefyre\Api\Entity\Topic;
 use Livefyre\Routing\Client;
+use Livefyre\Api\Factory\CursorFactory;
 
 class Network {
 	const DEFAULT_USER = "system";
@@ -72,19 +73,19 @@ class Network {
 
 	/* Topics */
 	public function getTopic($id) {
-		return PersonalizedStreams::getTopic($this, $id);
+		return PersonalizedStreamsClient::getTopic($this, $id);
 	}
 	public function createOrUpdateTopic($id, $label) {
 		$topic = Topic::generate($this, $id, $label);
 
-		return PersonalizedStreams::postTopic($this, $topic);
+		return PersonalizedStreamsClient::postTopic($this, $topic);
 	}
 	public function deleteTopic($topic) {
-		return PersonalizedStreams::patchTopic($this, $topic);
+		return PersonalizedStreamsClient::patchTopic($this, $topic);
 	}
 
 	public function getTopics($limit = 100, $offset = 0) {
-		return PersonalizedStreams::getTopics($this, $limit, $offset);
+		return PersonalizedStreamsClient::getTopics($this, $limit, $offset);
 	}
 	public function createOrUpdateTopics($topicMap) {
 		$topics = array();
@@ -92,27 +93,42 @@ class Network {
 		    array_push($topics, Topic::generate($this, $id, $label));
 		}
 
-		return PersonalizedStreams::postTopics($this, $topics);
+		return PersonalizedStreamsClient::postTopics($this, $topics);
 	}
 	public function deleteTopics($topics) {
-		return PersonalizedStreams::patchTopics($this, $topics);
+		return PersonalizedStreamsClient::patchTopics($this, $topics);
 	}
 
 	/* User Subscriptions */
 	public function getSubscriptions($userId) {
-		return PersonalizedStreams::getSubscriptions($this, $userId);
+		return PersonalizedStreamsClient::getSubscriptions($this, $userId);
 	}
 	public function addSubscriptions($userId, $topics) {
-		return PersonalizedStreams::postSubscriptions($this, $userId, $topics);
+		return PersonalizedStreamsClient::postSubscriptions($this, $userId, $topics);
 	}
 	public function updateSubscriptions($userId, $topics) {
-		return PersonalizedStreams::putSubscriptions($this, $userId, $topics);
+		return PersonalizedStreamsClient::putSubscriptions($this, $userId, $topics);
 	}
 	public function removeSubscriptions($userId, $topics) {
-		return PersonalizedStreams::patchSubscriptions($this, $userId, $topics);
+		return PersonalizedStreamsClient::patchSubscriptions($this, $userId, $topics);
 	}
 	public function getSubscribers($topic, $limit = 100, $offset = 0) {
-        return PersonalizedStreams::getSubscribers($this, $topic, $limit, $offset);
+        return PersonalizedStreamsClient::getSubscribers($this, $topic, $limit, $offset);
+    }
+
+    /* Timeline Cursor */
+    public function getTopicStreamCursor($topic, $limit = 50, $date = null) {
+    	if (is_null($date)) {
+    		$date = time();
+    	}
+    	return CursorFactory::getTopicStreamCursor($this, $topic, $limit, $date);
+    }
+
+    public function getPersonalStreamCursor($user, $limit = 50, $date = null) {
+    	if (is_null($date)) {
+    		$date = time();
+    	}
+    	return CursorFactory::getPersonalStreamCursor($this, $user, $limit, $date);
     }
 
 	/* Getters */

@@ -7,54 +7,55 @@ use Livefyre\Api\Entity\Topic;
 use Livefyre\Api\Entity\Subscription;
 use Livefyre\Api\Entity\SubscriptionType;
 
-class PersonalizedStreams {
+class PersonalizedStreamsClient {
 
-	const BASE_URL = "http://quill.%s/api/v4/";
-	// const BASE_URL = "http://127.0.0.1:7722/api/v4/";
+	const BASE_URL = "https://quill.%s/api/v4/";
+	const STREAM_URL = "https://bootstrap.%s/api/v4/";
+
 	const NETWORK_TOPICS_URL_PATH = ":topics/";
 	const COLLECTION_TOPICS_URL_PATH = ":collection=%s:topics/";
 	const SUBSCRIPTION_URL_PATH = ":subscriptions/";
 	const SUBSCRIBER_URL_PATH = ":subscribers/";
+	const TIMELINE_PATH = "timeline/";
 
 	/* Topic API */
-	public static function getTopic($obj, $id) {
-		$url = self::getUrl($obj);
-		$url = $url . Topic::generateUrn($obj, $id);
+	public static function getTopic($core, $id) {
+		$url = self::getUrl($core);
+		$url = $url . Topic::generateUrn($core, $id);
 
-		$response = Client::GET($url, self::getHeaders($obj));
+		$response = Client::GET($url, self::getHeaders($core));
 		
 		$body = self::getData($response);
 		if (!property_exists($body, "topic")) {
-			return NULL;
+			return null;
 		}
 
 		return self::marshallJsonToTopic($body->{"topic"});
 	}
 
-	public static function postTopic($obj, $topic) {
-		$topics = self::postTopics($obj, array($topic));
+	public static function postTopic($core, $topic) {
+		$topics = self::postTopics($core, array($topic));
 
-		if ($topics === NULL) {
-			return NULL;
+		if (is_null($topics)) {
+			return null;
 		}
 
 		return array_shift(array_values($topics));
 	}
 
-	public static function patchTopic($obj, $topic) {
-		return self::patchTopics($obj, array($topic)) == 1;
+	public static function patchTopic($core, $topic) {
+		return self::patchTopics($core, array($topic)) == 1;
 	}
 
 	/* Multiple Topic API */
-	public static function getTopics($obj, $limit = 100, $offset = 0) {
-		$data = array("limit" => $limit, "offset" => $offset);
-		$url = self::getTopicsUrl($obj);
+	public static function getTopics($core, $limit = 100, $offset = 0) {
+		$url = self::getTopicsUrl($core) . "?limit=" . $limit . "&offset=" . $offset; 
 
-		$response = Client::GET($url, self::getHeaders($obj), $data);
+		$response = Client::GET($url, self::getHeaders($core));
 		
 		$body = self::getData($response);
 		if (!property_exists($body, "topics")) {
-			return NULL;
+			return null;
 		}
 
 		$topics = array();
@@ -65,7 +66,7 @@ class PersonalizedStreams {
 		return $topics;
 	}
 
-	public static function postTopics($obj, $topics) {
+	public static function postTopics($core, $topics) {
 		$json = array();
 		foreach ($topics as &$topic) {
 			$label = $topic->getLabel();
@@ -76,17 +77,17 @@ class PersonalizedStreams {
 		}
 
 		$data = json_encode(array("topics" => $json));
-		$url = self::getTopicsUrl($obj);
+		$url = self::getTopicsUrl($core);
 
-		$response = Client::POST($url, self::getHeaders($obj), $data);
+		$response = Client::POST($url, self::getHeaders($core), $data);
 		return $topics;
 	}
 
-	public static function patchTopics($obj, $topics) {
+	public static function patchTopics($core, $topics) {
 		$data = json_encode(array("delete" => self::getTopicIds($topics)));
-		$url =  self::getTopicsUrl($obj);
+		$url =  self::getTopicsUrl($core);
 
-		$response = Client::PATCH($url, self::getHeaders($obj), $data);
+		$response = Client::PATCH($url, self::getHeaders($core), $data);
 
 		$body = self::getData($response);
 		if (!property_exists($body, "deleted")) {
@@ -104,7 +105,7 @@ class PersonalizedStreams {
 
 		$body = self::getData($response);
 		if (!property_exists($body, "topicIds")) {
-			return NULL;
+			return null;
 		}
 
 		return $body->{"topicIds"};
@@ -154,10 +155,10 @@ class PersonalizedStreams {
 		$url = self::getSubscriptionUrl($network, $userId);
 
 		$response = Client::GET($url, self::getHeaders($network));
-		
+
 		$body = self::getData($response);
 		if (!property_exists($body, "subscriptions")) {
-			return NULL;
+			return null;
 		}
 
 		$subscriptions = array();
@@ -214,27 +215,41 @@ class PersonalizedStreams {
 		
 		$body = self::getData($response);
 		if (!property_exists($body, "subscriptions")) {
-			return NULL;
+			return null;
 		}
 
 		return self::getData($response)->{"subscriptions"};
 	}
 
+	public static function getTimelineStream($core, $resource, $limit = 50, $until = null, $since = null) {
+		$url = self::getTimelineUrl($core) . "?resource=" . $resource . "&limit=" . $limit;
+
+		if (isset($until)) {
+			$url .= "&until=" . $until;
+		} elseif (isset($since)) {
+			$url .= "&since=" . $since;
+		}
+
+		$response = Client::GET($url, self::getHeaders($core));
+
+		return json_decode($response->body);
+	}
+
 	/* Helper Methods */
-	private static function getHeaders($obj, $userId = NULL) {
-		$token = ($userId === NULL) ? $obj->buildLivefyreToken() : $obj->buildUserAuthToken($userId, "", Network::DEFAULT_EXPIRES);
+	private static function getHeaders($core, $userId = null) {
+		$token = ($userId === null) ? $core->buildLivefyreToken() : $core->buildUserAuthToken($userId, "", Network::DEFAULT_EXPIRES);
 		return array(
 			"Authorization" => "lftoken " . $token,
 			"Content-Type" => "application/json"
 		);
 	}
 
-	private static function getUrl($obj) {
-		return sprintf(self::BASE_URL, $obj->getNetworkName());
+	private static function getUrl($core) {
+		return sprintf(self::BASE_URL, $core->getNetworkName());
 	}
 
-	private static function getTopicsUrl($obj) {
-		return self::getUrl($obj) . $obj->getUrn() . self::NETWORK_TOPICS_URL_PATH;
+	private static function getTopicsUrl($core) {
+		return self::getUrl($core) . $core->getUrn() . self::NETWORK_TOPICS_URL_PATH;
 	}
 
 	private static function getCollectionTopicsUrl($site, $collectionId) {
@@ -243,6 +258,10 @@ class PersonalizedStreams {
 
 	private static function getSubscriptionUrl($network, $user) {
 		return self::getUrl($network) . $network->getUserUrn($user) . self::SUBSCRIPTION_URL_PATH;
+	}
+
+	private static function getTimelineUrl($core) {
+		return sprintf(self::STREAM_URL, $core->getNetworkName()) . self::TIMELINE_PATH;
 	}
 
 	private static function getTopicIds($topics) {

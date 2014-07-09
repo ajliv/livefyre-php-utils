@@ -6,17 +6,17 @@ class Topic {
     const TOPIC_IDEN = ":topic=";
 	private $id;
 	private $label;
-	private $createdAt = 0;
-	private $modifiedAt = 0;
+	private $createdAt;
+	private $modifiedAt;
 
 	public function __construct() { }
 
 	/* new instances should use this method */
 	public static function generate($obj, $id, $label) {
-		return self::copy(self::generateUrn($obj, $id), $label, NULL, NULL);
+		return self::copy(self::generateUrn($obj, $id), $label);
 	}
 
-	public static function copy($id, $label, $createdAt, $modifiedAt) {
+	public static function copy($id, $label, $createdAt = null, $modifiedAt = null) {
 		$instance = new self();
     	$instance->setId($id);
     	$instance->setLabel($label);

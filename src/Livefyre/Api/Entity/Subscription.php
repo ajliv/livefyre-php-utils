@@ -10,7 +10,7 @@ class Subscription {
 	private $type;
 	private $createdAt;
 
-	public function __construct($to, $by, $type, $createdAt = NULL) {
+	public function __construct($to, $by, $type, $createdAt = null) {
 		$this->by = $by;
 		$this->type = $type;
 		$this->to = $to;
@@ -46,5 +46,3 @@ class Subscription {
 		$this->createdAt = $createdAt;
 	}
 }
-
-

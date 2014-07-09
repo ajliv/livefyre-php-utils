@@ -10,7 +10,7 @@ Works with PHP5.
 If using Composer, add this to your composer.json:
 
 	"require": {
-        "livefyre/livefyre-php-utils": "1.2.0"
+        "livefyre/livefyre-php-utils": "1.3.0"
     }
 
 ## Usage
@@ -77,6 +77,8 @@ To get a content collection's id:
 ```php
 $site->getCollectionId("articleId");
 ```
+
+For additional documentation, see below:
 
 ## Documentation
 

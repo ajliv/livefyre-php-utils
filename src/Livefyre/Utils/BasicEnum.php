@@ -2,10 +2,10 @@
 namespace Livefyre\Utils;
 
 abstract class BasicEnum {
-    private static $constCache = NULL;
+    private static $constCache = null;
 
     private static function getConstants() {
-        if (self::$constCache === NULL) {
+        if (self::$constCache === null) {
             $reflect = new ReflectionClass(get_called_class());
             self::$constCache = $reflect->getConstants();
         }
