@@ -1,5 +1,5 @@
 <?php
-namespace Livefyre\Api\Entity;
+namespace Livefyre\Entity;
 
 use Livefyre\Api\PersonalizedStreamsClient;
 

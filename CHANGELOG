@@ -4,6 +4,8 @@
 * Added timeline support.
 * Updated createCollectionMeta() to take in optional param in an array.
 * Added support for making calls using the WP client.
+* Updated checksum formula.
+* Refactored core objects.
 
 === 1.2.0 2014-06-12
 

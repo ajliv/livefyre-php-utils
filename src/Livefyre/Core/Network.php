@@ -1,11 +1,11 @@
 <?php
 namespace Livefyre\Core;
 
-use Livefyre\Utils\JWT;
 use Livefyre\Api\PersonalizedStreamsClient;
-use Livefyre\Api\Entity\Topic;
+use Livefyre\Entity\Topic;
+use Livefyre\Factory\CursorFactory;
 use Livefyre\Routing\Client;
-use Livefyre\Api\Factory\CursorFactory;
+use Livefyre\Utils\JWT;
 
 class Network {
 	const DEFAULT_USER = "system";
@@ -76,7 +76,7 @@ class Network {
 		return PersonalizedStreamsClient::getTopic($this, $id);
 	}
 	public function createOrUpdateTopic($id, $label) {
-		$topic = Topic::generate($this, $id, $label);
+		$topic = Topic::create($this, $id, $label);
 
 		return PersonalizedStreamsClient::postTopic($this, $topic);
 	}
@@ -90,7 +90,7 @@ class Network {
 	public function createOrUpdateTopics($topicMap) {
 		$topics = array();
 		foreach ($topicMap as $id => $label) {
-		    array_push($topics, Topic::generate($this, $id, $label));
+		    array_push($topics, Topic::create($this, $id, $label));
 		}
 
 		return PersonalizedStreamsClient::postTopics($this, $topics);

@@ -4,20 +4,20 @@ namespace Livefyre\Test;
 use Livefyre\Livefyre;
 
 class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
-    const NETWORK_NAME = "<NETWORK-NAME>";
-    const NETWORK_KEY = "<NETWORK-KEY>";
-    const SITE_ID = "<SITE-ID>";
-    const SITE_KEY = "<SITE-KEY>";
-    const COLLECTION_ID = "<COLLECTION-ID>";
-    const USER = "<USER>";
+    const NETWORK_NAME = "apitesting-qa-0.fyre.co";
+    const NETWORK_KEY = "klo2rwBIyWp3X/yith5PvCL4irM=";
+    const SITE_ID = "290664";
+    const SITE_KEY = "/IneVBxyMwSvKa1i/okpYSR7Btk=";
+    const COLLECTION_ID = "2487945";
+    const USER = "apitester";
 
     private $_network;
     private $_site;
 
     protected function setUp() {
-        $this->markTestSkipped(
-              "can't make network calls to bad params."
-            );
+        // $this->markTestSkipped(
+        //       "can't make network calls to bad params."
+        //     );
 
         $this->_network = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY);
         $this->_site = $this->_network->getSite(self::SITE_ID, self::SITE_KEY);

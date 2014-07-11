@@ -5,7 +5,7 @@ use Livefyre\Utils\JWT;
 use Livefyre\Utils\IDNA;
 use Livefyre\Routing\Client;
 use Livefyre\Api\PersonalizedStreamsClient;
-use Livefyre\Api\Entity\Topic;
+use Livefyre\Entity\Topic;
 
 class Site {
 	private $_network;
@@ -73,7 +73,7 @@ class Site {
 		return PersonalizedStreamsClient::getTopic($this, $id);
 	}
 	public function createOrUpdateTopic($id, $label) {
-		$topic = Topic::generate($this, $id, $label);
+		$topic = Topic::create($this, $id, $label);
 
 		return PersonalizedStreamsClient::postTopic($this, $topic);
 	}
@@ -87,7 +87,7 @@ class Site {
 	public function createOrUpdateTopics($topicMap) {
 		$topics = array();
 		foreach ($topicMap as $id => $label) {
-		    array_push($topics, Topic::generate($this, $id, $label));
+		    array_push($topics, Topic::create($this, $id, $label));
 		}
 		return PersonalizedStreamsClient::postTopics($this, $topics);
 	}

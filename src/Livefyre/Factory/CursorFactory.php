@@ -1,7 +1,7 @@
 <?php
-namespace Livefyre\Api\Factory;
+namespace Livefyre\Factory;
 
-use Livefyre\Api\Entity\TimelineCursor;
+use Livefyre\Entity\TimelineCursor;
 
 class CursorFactory {
 	public static function getTopicStreamCursor($core, $topic, $limit, $date) {

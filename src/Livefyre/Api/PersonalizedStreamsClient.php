@@ -3,14 +3,14 @@ namespace Livefyre\Api;
 
 use Livefyre\Core\Network;
 use Livefyre\Routing\Client;
-use Livefyre\Api\Entity\Topic;
-use Livefyre\Api\Entity\Subscription;
-use Livefyre\Api\Entity\SubscriptionType;
+use Livefyre\Entity\Topic;
+use Livefyre\Entity\Subscription;
+use Livefyre\Entity\SubscriptionType;
 
 class PersonalizedStreamsClient {
 
-	const BASE_URL = "https://quill.%s/api/v4/";
-	const STREAM_URL = "https://bootstrap.%s/api/v4/";
+	const BASE_URL = "http://quill.%s/api/v4/";
+	const STREAM_URL = "http://bootstrap.%s/api/v4/";
 
 	const NETWORK_TOPICS_URL_PATH = ":topics/";
 	const COLLECTION_TOPICS_URL_PATH = ":collection=%s:topics/";
@@ -30,7 +30,7 @@ class PersonalizedStreamsClient {
 			return null;
 		}
 
-		return self::marshallJsonToTopic($body->{"topic"});
+		return Topic::serializeFromJson($body->{"topic"});
 	}
 
 	public static function postTopic($core, $topic) {
@@ -60,7 +60,7 @@ class PersonalizedStreamsClient {
 
 		$topics = array();
 		foreach ($body->{"topics"} as &$topic) {
-			$topics[] = self::marshallJsonToTopic($topic);
+			$topics[] = Topic::serializeFromJson($topic);
 		}
 
 		return $topics;
@@ -70,10 +70,10 @@ class PersonalizedStreamsClient {
 		$json = array();
 		foreach ($topics as &$topic) {
 			$label = $topic->getLabel();
-			if (strlen($label) > 128 || empty($label)) {
-				throw new \InvalidArgumentException("topic label should be 128 char or under");
+			if (empty($label) || strlen($label) > 128) {
+				throw new \InvalidArgumentException("topic label should be 128 char or under and not empty");
 			}
-			$json[] = $topic->jsonSerialize();
+			$json[] = $topic->serializeToJson();
 		}
 
 		$data = json_encode(array("topics" => $json));
@@ -163,14 +163,14 @@ class PersonalizedStreamsClient {
 
 		$subscriptions = array();
 		foreach ($body->{"subscriptions"} as &$sub) {
-			$subscriptions[] = self::marshallJsontoSubscription($sub);
+			$subscriptions[] = Subscription::serializeFromJson($sub);
 		}
 
 		return $subscriptions;
 	}
 
 	public static function postSubscriptions($network, $userId, $topics) {
-		$data = json_encode(array("subscriptions" => self::topicToSubscriptions($topics, $userId)));
+		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userId)));
 		$url = self::getSubscriptionUrl($network, $userId);
 
 		$response = Client::POST($url, self::getHeaders($network, $userId), $data);
@@ -184,7 +184,7 @@ class PersonalizedStreamsClient {
 	}
 
 	public static function putSubscriptions($network, $userId, $topics) {
-		$data = json_encode(array("subscriptions" => self::topicToSubscriptions($topics, $userId)));
+		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userId)));
 		$url = self::getSubscriptionUrl($network, $userId);
 
 		$response = Client::PUT($url, self::getHeaders($network, $userId), $data);
@@ -195,7 +195,7 @@ class PersonalizedStreamsClient {
 	}
 
 	public static function patchSubscriptions($network, $userId, $topics) {
-		$data = json_encode(array("delete" => self::topicToSubscriptions($topics, $userId)));
+		$data = json_encode(array("delete" => self::buildSubscriptions($topics, $userId)));
 		$url = self::getSubscriptionUrl($network, $userId);
 
 		$response = Client::PATCH($url, self::getHeaders($network, $userId), $data);
@@ -208,7 +208,7 @@ class PersonalizedStreamsClient {
 		return self::getData($response)->{"removed"};
 	}
 
-	public static function getSubscribers($network, $topic, $limit, $offset) {
+	public static function getSubscribers($network, $topic, $limit = 100, $offset = 0) {
 		$url = self::getUrl($network) . $topic->getId() . self::SUBSCRIBER_URL_PATH;
 
 		$response = Client::GET($url, self::getHeaders($network));
@@ -272,33 +272,15 @@ class PersonalizedStreamsClient {
 		return $topicIds;
 	}
 
-	private static function topicToSubscriptions($topics, $userId) {
+	private static function buildSubscriptions($topics, $userId) {
 		$subscriptions = array();
 		foreach($topics as &$topic) {
-			$subscriptions[] = (new Subscription($topic->getId(), $userId, SubscriptionType::personalStream))->jsonSerialize();
+			$subscriptions[] = (new Subscription($topic->getId(), $userId, SubscriptionType::personalStream))->serializeToJson();
 		}
 		return $subscriptions;
 	}
 
 	private static function getData($response) {
 		return json_decode($response->body)->{"data"};
-	}
-
-	private static function marshallJsonToTopic($json) {
-		$topic = Topic::copy(
-			$json->{"id"},
-			$json->{"label"},
-			$json->{"createdAt"},
-			$json->{"modifiedAt"});
-		return $topic;
-	}
-
-	private static function marshallJsontoSubscription($json) {
-		$subscription = new Subscription(
-			$json->{"to"},
-			$json->{"by"},
-			$json->{"type"},
-			$json->{"createdAt"});
-		return $subscription;
 	}
 }
