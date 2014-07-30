@@ -16,9 +16,9 @@ class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
     private $_site;
 
     protected function setUp() {
-        // $this->markTestSkipped(
-        //       "can't make network calls to bad params."
-        //     );
+        $this->markTestSkipped(
+              "can't make network calls to bad params."
+            );
 
         $this->_network = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY);
         $this->_site = $this->_network->getSite(self::SITE_ID, self::SITE_KEY);
