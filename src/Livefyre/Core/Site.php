@@ -57,7 +57,7 @@ class Site {
 	}
 
 	public function getCollectionContent($articleId) {
-		$url = sprintf("http://bootstrap.%s/bs3/%s/%s/%s/init", $this->_network->_networkName, $this->_network->_networkName, $this->_id, base64_encode($articleId));
+		$url = sprintf("https://bootstrap.livefyre.com/bs3/%s/%s/%s/init", $this->_network->getName(), $this->_id, base64_encode($articleId));
 		$response = Client::GET($url);
 
 		return json_decode($response->body);
@@ -74,11 +74,12 @@ class Site {
 	}
 	public function createOrUpdateTopic($id, $label) {
 		$topic = Topic::create($this, $id, $label);
+		PersonalizedStreamsClient::postTopics($this, array($topic));
 
-		return PersonalizedStreamsClient::postTopic($this, $topic);
+		return $topic;
 	}
 	public function deleteTopic($topic) {
-		return PersonalizedStreamsClient::patchTopic($this, $topic);
+		return PersonalizedStreamsClient::patchTopics($this, array($topic)) == 1;
 	}
 
 	public function getTopics($limit = 100, $offset = 0) {
@@ -124,7 +125,7 @@ class Site {
 		return $this->_network->getNetworkName();
 	}
 	public function buildLivefyreToken() {
-		return $this->getNetwork()->buildLivefyreToken();
+		return $this->_network->buildLivefyreToken();
 	}
 	public function getNetwork() {
 		return $this->_network;

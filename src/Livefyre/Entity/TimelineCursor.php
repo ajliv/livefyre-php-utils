@@ -9,7 +9,7 @@ class TimelineCursor {
 
 	private $_core;
 	private $_resource;
-	private $_currentTime;
+	private $_cursorTime;
 	private $_next = FALSE;
 	private $_previous = FALSE;
 	private $_limit;
@@ -18,20 +18,18 @@ class TimelineCursor {
 		$this->_core = $core;
 		$this->_resource = $resource;
 		$this->_limit = $limit;
-		$this->_currentTime = $startTime;
+		$this->_cursorTime = gmdate(self::DATE_FORMAT, $startTime);
 	}
 
 	public function next($limit = null) {
 		$limit = (is_null($limit)) ? $this->_limit : $limit;
 
-		$time = gmdate(self::DATE_FORMAT, $this->_currentTime);
-		$data = PersonalizedStreamsClient::getTimelineStream($this->_core, $this->_resource, $limit, null, $time);
+		$data = PersonalizedStreamsClient::getTimelineStream($this->_core, $this->_resource, $limit, null, $this->_cursorTime);
 		$cursor = $data->{"meta"}->{"cursor"};
 		
 		$this->_next = $cursor->{"hasNext"};
 		$this->_previous = $cursor->{"next"} !== null;
-
-		$this->_currentTime = $this->_previous ? date("U", strtotime($cursor->{"prev"})) : $this->_currentTime;
+		$this->_cursorTime = $cursor->{"next"};
 
 		return $data;
 	}
@@ -39,15 +37,12 @@ class TimelineCursor {
 	public function previous($limit = null) {
 		$limit = (is_null($limit)) ? $this->_limit : $limit;
 
-		$time = gmdate(self::DATE_FORMAT, $this->_currentTime);
-		$data = PersonalizedStreamsClient::getTimelineStream($this->_core, $this->_resource, $limit, $time, null);
-		
+		$data = PersonalizedStreamsClient::getTimelineStream($this->_core, $this->_resource, $limit, $this->_cursorTime, null);
 		$cursor = $data->{"meta"}->{"cursor"};
 		
 		$this->_previous = $cursor->{"hasPrev"};
 		$this->_next = $cursor->{"prev"} !== null;
-
-		$this->_currentTime = $this->_next ? date("U", strtotime($cursor->{"prev"})) : $this->_currentTime;
+		$this->_cursorTime = $cursor->{"prev"};
 
 		return $data;
 	}
@@ -55,11 +50,12 @@ class TimelineCursor {
 	public function getResource() {
 		return $this->_resource;
 	}
+	// returns whichever format is stored - can be either UUID or time.
 	public function getCursorTime() {
-		return $this->_currentTime;
+		return $this->_cursorTime;
 	}
 	public function setCursorTime($newTime) {
-		$this->_currentTime = $newTime;
+		$this->_cursorTime = gmdate(self::DATE_FORMAT, $newTime);
 	}
 	public function hasPrevious() {
 		return $this->_previous;

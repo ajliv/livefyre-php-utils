@@ -13,10 +13,12 @@ class Network {
 
 	private $_name;
 	private $_key;
+	private $_networkName;
 
 	public function __construct($name, $key) {
 		$this->_name = $name;
 		$this->_key = $key;
+		$this->_networkName = explode(".", $name)[0];
 	}
 
 	public function setUserSyncUrl($urlTemplate) {
@@ -77,11 +79,12 @@ class Network {
 	}
 	public function createOrUpdateTopic($id, $label) {
 		$topic = Topic::create($this, $id, $label);
+		PersonalizedStreamsClient::postTopics($this, array($topic));
 
-		return PersonalizedStreamsClient::postTopic($this, $topic);
+		return $topic;
 	}
 	public function deleteTopic($topic) {
-		return PersonalizedStreamsClient::patchTopic($this, $topic);
+		return PersonalizedStreamsClient::patchTopics($this, array($topic)) == 1;
 	}
 
 	public function getTopics($limit = 100, $offset = 0) {
@@ -135,12 +138,12 @@ class Network {
 	public function getUrn() {
 		return "urn:livefyre:" . $this->_name;
 	}
-	public function getNetworkName() {
-		return $this->getName();
-	}
 	public function getUserUrn($user) {
         return $this->getUrn().":user=".$user;
     }
+	public function getNetworkName() {
+		return $this->_networkName;
+	}
     public function getName() {
     	return $this->_name;
     }

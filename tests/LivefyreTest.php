@@ -11,6 +11,7 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
     const SITE_ID = "<SITE-ID>";
     const SITE_KEY = "<SITE-KEY>";
     const COLLECTION_ID = "<COLLECTION-ID>";
+    const USER = "<USER-ID>";
     const ARTICLE_ID = "<ARTICLE-ID>";
 
     // public function testApi() {
@@ -18,9 +19,9 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
     //     $this->assertTrue($network->setUserSyncUrl("url/{id}"));
     //     $this->assertTrue($network->syncUser("username"));
 
-    //     $site = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY)->getSite(self::SITE_ID, $siteSecret);
-    //     print($site->getCollectionId(articleId));
-    //     var_dump($site->getCollectionContent(articleId));
+    //     $site = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY)->getSite(self::SITE_ID, self::SITE_KEY);
+    //     print($site->getCollectionId(self::ARTICLE_ID));
+    //     var_dump($site->getCollectionContent(self::ARTICLE_ID));
     // }
 
 	/**

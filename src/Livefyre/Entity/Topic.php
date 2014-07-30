@@ -17,12 +17,12 @@ class Topic {
 	}
 
 	/* new instances should use this method */
-	public static function create($obj, $id, $label) {
-		return new self(self::generateUrn($obj, $id), $label);
+	public static function create($core, $id, $label) {
+		return new self(self::generateUrn($core, $id), $label);
 	}
 
-    public static function generateUrn($obj, $id) {
-        return $obj->getUrn() . self::TOPIC_IDEN . $id;
+    public static function generateUrn($core, $id) {
+        return $core->getUrn() . self::TOPIC_IDEN . $id;
     }
 
 	public static function serializeFromJson($json) {

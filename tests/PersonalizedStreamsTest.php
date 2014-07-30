@@ -4,12 +4,13 @@ namespace Livefyre\Test;
 use Livefyre\Livefyre;
 
 class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
-    const NETWORK_NAME = "apitesting-qa-0.fyre.co";
-    const NETWORK_KEY = "klo2rwBIyWp3X/yith5PvCL4irM=";
-    const SITE_ID = "290664";
-    const SITE_KEY = "/IneVBxyMwSvKa1i/okpYSR7Btk=";
-    const COLLECTION_ID = "2487945";
-    const USER = "apitester";
+    const NETWORK_NAME = "<NETWORK-NAME>";
+    const NETWORK_KEY = "<NETWORK-KEY>";
+    const SITE_ID = "<SITE-ID>";
+    const SITE_KEY = "<SITE-KEY>";
+    const COLLECTION_ID = "<COLLECTION-ID>";
+    const USER = "<USER-ID>";
+    const ARTICLE_ID = "<ARTICLE-ID>";
 
     private $_network;
     private $_site;
@@ -110,6 +111,8 @@ class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
         $network->addSubscriptions(self::USER, array($topic1, $topic2));
 
         $network->updateSubscriptions(self::USER, array($topic2));
+
+        $network->getSubscribers($topic1);
 
         $network->removeSubscriptions(self::USER, array($topic2));
 

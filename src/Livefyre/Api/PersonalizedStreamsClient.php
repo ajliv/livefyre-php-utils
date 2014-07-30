@@ -9,8 +9,8 @@ use Livefyre\Entity\SubscriptionType;
 
 class PersonalizedStreamsClient {
 
-	const BASE_URL = "http://quill.%s/api/v4/";
-	const STREAM_URL = "http://bootstrap.%s/api/v4/";
+	const BASE_URL = "https://%s.quill.fyre.co/api/v4/";
+	const STREAM_URL = "https://bootstrap.livefyre.com/api/v4/";
 
 	const NETWORK_TOPICS_URL_PATH = ":topics/";
 	const COLLECTION_TOPICS_URL_PATH = ":collection=%s:topics/";
@@ -31,20 +31,6 @@ class PersonalizedStreamsClient {
 		}
 
 		return Topic::serializeFromJson($body->{"topic"});
-	}
-
-	public static function postTopic($core, $topic) {
-		$topics = self::postTopics($core, array($topic));
-
-		if (is_null($topics)) {
-			return null;
-		}
-
-		return array_shift(array_values($topics));
-	}
-
-	public static function patchTopic($core, $topic) {
-		return self::patchTopics($core, array($topic)) == 1;
 	}
 
 	/* Multiple Topic API */
@@ -218,7 +204,12 @@ class PersonalizedStreamsClient {
 			return null;
 		}
 
-		return self::getData($response)->{"subscriptions"};
+		$subscriptions = array();
+		foreach ($body->{"subscriptions"} as &$sub) {
+			$subscriptions[] = Subscription::serializeFromJson($sub);
+		}
+
+		return $subscriptions;
 	}
 
 	public static function getTimelineStream($core, $resource, $limit = 50, $until = null, $since = null) {
@@ -261,7 +252,7 @@ class PersonalizedStreamsClient {
 	}
 
 	private static function getTimelineUrl($core) {
-		return sprintf(self::STREAM_URL, $core->getNetworkName()) . self::TIMELINE_PATH;
+		return self::STREAM_URL . self::TIMELINE_PATH;
 	}
 
 	private static function getTopicIds($topics) {
