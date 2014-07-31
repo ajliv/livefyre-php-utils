@@ -53,10 +53,10 @@ $site = $network->getSite("siteId", "siteKey");
 ```
 
 Building a collection meta token:
-*The 'tags' and type' arguments are optional.*
+*The {options} argument is optional.*
 
 ```php
-$site->buildCollectionMetaToken("title", "articleId", "url", "tags", "type");
+$site->buildCollectionMetaToken("title", "articleId", "url", {options});
 ```
 
 Building a checksum:
@@ -78,9 +78,7 @@ To get a content collection's id:
 $site->getCollectionId("articleId");
 ```
 
-For additional documentation, see below:
-
-## Documentation
+## Additional Documentation
 
 Located [here](http://answers.livefyre.com/developers/libraries).
 
