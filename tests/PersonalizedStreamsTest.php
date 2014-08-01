@@ -2,6 +2,8 @@
 namespace Livefyre\Test;
 
 use Livefyre\Livefyre;
+use Livefyre\Api\PersonalizedStreamsClient;
+use Livefyre\Factory\CursorFactory;
 
 class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
     const NETWORK_NAME = "<NETWORK-NAME>";
@@ -26,103 +28,85 @@ class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
     
     public function testNetworkTopicApi() {
         $network = $this->_network;
-        $topic = $network->createOrUpdateTopic("1", "UNO");
+        $topic = PersonalizedStreamsClient::createOrUpdateTopic($network, "1", "UNO");
         $this->assertFalse($topic === null);
 
-        $topic = $network->getTopic("1");
+        $topic = PersonalizedStreamsClient::getTopic($network, "1");
         $this->assertFalse($topic->getCreatedAt() === null);
 
-        $this->assertTrue($network->deleteTopic($topic));
+        $this->assertTrue(PersonalizedStreamsClient::deleteTopic($network, $topic));
 
 
-        $topics = $network->createOrUpdateTopics(array("1", "UNO"));
+        $topics = PersonalizedStreamsClient::createOrUpdateTopics($network, array("1", "UNO"));
         $this->assertFalse($topics === null);
 
-        $topics = $network->getTopics();
+        $topics = PersonalizedStreamsClient::getTopics($network);
         $this->assertFalse(sizeof($topics) === 1);
 
-        $network->deleteTopics($topics);
-    }
-
-    public function testNetworkSubscriptionApi() {
-        $network = $this->_network;
-
-        $subs = $network->getSubscriptions(self::USER);
-
-        $topics = $network->createOrUpdateTopics(array("2","DOS","3","TROIS"));
-
-        $network->addSubscriptions(self::USER, $topics);
-        $network->updateSubscriptions(self::USER, $topics);
-
-        $topic = $network->getTopic("2");
-        $network->getSubscribers($topic);
-
-        $network->removeSubscriptions(self::USER, $topics);
-
-        $network->deleteTopics($topics);
+        PersonalizedStreamsClient::deleteTopics($network, $topics);
     }
 
     public function testSiteTopicApi() {
         $site = $this->_site;
-        $topic = $site->createOrUpdateTopic("2", "DUL");
+        $topic = PersonalizedStreamsClient::createOrUpdateTopic($site, "2", "DUL");
         $this->assertFalse($topic === null);
 
-        $topic = $site->getTopic("2");
+        $topic = PersonalizedStreamsClient::getTopic($site, "2");
         $this->assertFalse($topic->getCreatedAt() === null);
 
-        $this->assertTrue($site->deleteTopic($topic));
+        $this->assertTrue(PersonalizedStreamsClient::deleteTopic($site, $topic));
 
 
-        $topics = $site->createOrUpdateTopics(array("2", "DUL"));
+        $topics = PersonalizedStreamsClient::createOrUpdateTopics($site, array("2", "DUL"));
         $this->assertFalse($topics === null);
 
-        $topics = $site->getTopics();
+        $topics = PersonalizedStreamsClient::getTopics($site);
         $this->assertFalse(sizeof($topics) === 1);
 
-        $site->deleteTopics($topics);
+        PersonalizedStreamsClient::deleteTopics($site, $topics);
     }
     
     public function testCollectionTopicApi() {
         $site = $this->_site;
 
-        $site->getCollectionTopics(self::COLLECTION_ID);
+        PersonalizedStreamsClient::getCollectionTopics($site, self::COLLECTION_ID);
 
-        $topic2 = $site->createOrUpdateTopic("2", "DUL");
+        $topic2 = PersonalizedStreamsClient::createOrUpdateTopic($site, "2", "DUL");
 
-        $site->addCollectionTopics(self::COLLECTION_ID, array($topic2));
+        PersonalizedStreamsClient::addCollectionTopics($site, self::COLLECTION_ID, array($topic2));
 
-        $topic1 = $site->createOrUpdateTopic("1", "HANA");
+        $topic1 = PersonalizedStreamsClient::createOrUpdateTopic($site, "1", "HANA");
 
-        $site->updateCollectionTopics(self::COLLECTION_ID, array($topic1));
+        PersonalizedStreamsClient::replaceCollectionTopics($site, self::COLLECTION_ID, array($topic1));
 
-        $site->removeCollectionTopics(self::COLLECTION_ID, array($topic1, $topic2));
+        PersonalizedStreamsClient::removeCollectionTopics($site, self::COLLECTION_ID, array($topic1, $topic2));
 
-        $site->deleteTopics(array($topic1, $topic2));
+        PersonalizedStreamsClient::deleteTopics($site, array($topic1, $topic2));
     }
 
     public function testSubscriptions() {
         $network = $this->_network;
 
-        $topic1 = $network->createOrUpdateTopic("1", "HANA");
-        $topic2 = $network->createOrUpdateTopic("2", "DUL");
+        $topic1 = PersonalizedStreamsClient::createOrUpdateTopic($network, "1", "HANA");
+        $topic2 = PersonalizedStreamsClient::createOrUpdateTopic($network, "2", "DUL");
 
-        $network->getSubscriptions(self::USER);
+        PersonalizedStreamsClient::getSubscriptions($network, self::USER_ID);
 
-        $network->addSubscriptions(self::USER, array($topic1, $topic2));
+        PersonalizedStreamsClient::addSubscriptions($network, self::USER_ID, array($topic1, $topic2));
 
-        $network->updateSubscriptions(self::USER, array($topic2));
+        PersonalizedStreamsClient::replaceSubscriptions($network, self::USER_ID, array($topic2));
 
-        $network->getSubscribers($topic1);
+        PersonalizedStreamsClient::getSubscribers($network, $topic1);
 
-        $network->removeSubscriptions(self::USER, array($topic2));
+        PersonalizedStreamsClient::removeSubscriptions($network, self::USER_ID, array($topic2));
 
-        $network->deleteTopic($topic1);
+        PersonalizedStreamsClient::deleteTopic($network, $topic1);
     }
 
     public function testTimelineStream() {
         $network = $this->_network;
 
-        $cursor = $network->getPersonalStreamCursor(self::USER);
+        $cursor = CursorFactory::getPersonalStreamCursor($network, self::USER_ID);
 
         $data = $cursor->next();
         $data = $cursor->previous();

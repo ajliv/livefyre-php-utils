@@ -73,67 +73,6 @@ class Network {
 		return new Site($this, $siteId, $siteKey);
 	}
 
-	/* Topics */
-	public function getTopic($id) {
-		return PersonalizedStreamsClient::getTopic($this, $id);
-	}
-	public function createOrUpdateTopic($id, $label) {
-		$topic = Topic::create($this, $id, $label);
-		PersonalizedStreamsClient::postTopics($this, array($topic));
-
-		return $topic;
-	}
-	public function deleteTopic($topic) {
-		return PersonalizedStreamsClient::patchTopics($this, array($topic)) == 1;
-	}
-
-	public function getTopics($limit = 100, $offset = 0) {
-		return PersonalizedStreamsClient::getTopics($this, $limit, $offset);
-	}
-	public function createOrUpdateTopics($topicMap) {
-		$topics = array();
-		foreach ($topicMap as $id => $label) {
-		    array_push($topics, Topic::create($this, $id, $label));
-		}
-
-		return PersonalizedStreamsClient::postTopics($this, $topics);
-	}
-	public function deleteTopics($topics) {
-		return PersonalizedStreamsClient::patchTopics($this, $topics);
-	}
-
-	/* User Subscriptions */
-	public function getSubscriptions($userId) {
-		return PersonalizedStreamsClient::getSubscriptions($this, $userId);
-	}
-	public function addSubscriptions($userId, $topics) {
-		return PersonalizedStreamsClient::postSubscriptions($this, $userId, $topics);
-	}
-	public function updateSubscriptions($userId, $topics) {
-		return PersonalizedStreamsClient::putSubscriptions($this, $userId, $topics);
-	}
-	public function removeSubscriptions($userId, $topics) {
-		return PersonalizedStreamsClient::patchSubscriptions($this, $userId, $topics);
-	}
-	public function getSubscribers($topic, $limit = 100, $offset = 0) {
-        return PersonalizedStreamsClient::getSubscribers($this, $topic, $limit, $offset);
-    }
-
-    /* Timeline Cursor */
-    public function getTopicStreamCursor($topic, $limit = 50, $date = null) {
-    	if (is_null($date)) {
-    		$date = time();
-    	}
-    	return CursorFactory::getTopicStreamCursor($this, $topic, $limit, $date);
-    }
-
-    public function getPersonalStreamCursor($user, $limit = 50, $date = null) {
-    	if (is_null($date)) {
-    		$date = time();
-    	}
-    	return CursorFactory::getPersonalStreamCursor($this, $user, $limit, $date);
-    }
-
 	/* Getters */
 	public function getUrn() {
 		return "urn:livefyre:" . $this->_name;

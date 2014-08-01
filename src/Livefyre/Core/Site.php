@@ -68,55 +68,6 @@ class Site {
 		return $content->{"collectionSettings"}->{"collectionId"};
 	}
 
-	/* Topics */
-	public function getTopic($id) {
-		return PersonalizedStreamsClient::getTopic($this, $id);
-	}
-	public function createOrUpdateTopic($id, $label) {
-		$topic = Topic::create($this, $id, $label);
-		PersonalizedStreamsClient::postTopics($this, array($topic));
-
-		return $topic;
-	}
-	public function deleteTopic($topic) {
-		return PersonalizedStreamsClient::patchTopics($this, array($topic)) == 1;
-	}
-
-	public function getTopics($limit = 100, $offset = 0) {
-		return PersonalizedStreamsClient::getTopics($this, $limit, $offset);
-	}
-	public function createOrUpdateTopics($topicMap) {
-		$topics = array();
-		foreach ($topicMap as $id => $label) {
-		    array_push($topics, Topic::create($this, $id, $label));
-		}
-		return PersonalizedStreamsClient::postTopics($this, $topics);
-	}
-	public function deleteTopics($topics) {
-		return PersonalizedStreamsClient::patchTopics($this, $topics);
-	}
-
-	public function getCollectionTopics($collectionId) {
-		return PersonalizedStreamsClient::getCollectionTopics($this, $collectionId);
-	}
-	public function addCollectionTopics($collectionId, $topics) {
-		return PersonalizedStreamsClient::postCollectionTopics($this, $collectionId, $topics);
-	}
-	public function updateCollectionTopics($collectionId, $topics) {
-		return PersonalizedStreamsClient::putCollectionTopics($this, $collectionId, $topics);
-	}
-	public function removeCollectionTopics($collectionId, $topics) {
-		return PersonalizedStreamsClient::patchCollectionTopics($this, $collectionId, $topics);
-	}
-
-	/* Timeline Cursor */
-    public function getTopicStreamCursor($topic, $limit = 50, $date = null) {
-    	if (is_null($date)) {
-    		$date = time();
-    	}
-    	return CursorFactory::getTopicStreamCursor($this, $topic, $limit, $date);
-    }
-
 	/* Getters */
 	public function getUrn() {
 		return $this->_network->getUrn() . ":site=" . $this->_id;

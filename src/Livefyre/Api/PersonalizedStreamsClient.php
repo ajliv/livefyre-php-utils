@@ -33,6 +33,14 @@ class PersonalizedStreamsClient {
 		return Topic::serializeFromJson($body->{"topic"});
 	}
 
+	public static function createOrUpdateTopic($core, $id, $label) {
+		return self::createOrUpdateTopics($core, array($id => $label))[0];
+	}
+
+	public static function deleteTopic($core, $topic) {
+		return self::deleteTopics($core, array($topic)) == 1;
+	}
+
 	/* Multiple Topic API */
 	public static function getTopics($core, $limit = 100, $offset = 0) {
 		$url = self::getTopicsUrl($core) . "?limit=" . $limit . "&offset=" . $offset; 
@@ -52,13 +60,16 @@ class PersonalizedStreamsClient {
 		return $topics;
 	}
 
-	public static function postTopics($core, $topics) {
+	public static function createOrUpdateTopics($core, $topicMap) {
+		$topics = array();
 		$json = array();
-		foreach ($topics as &$topic) {
-			$label = $topic->getLabel();
+		foreach ($topicMap as $id => $label) {
 			if (empty($label) || strlen($label) > 128) {
 				throw new \InvalidArgumentException("topic label should be 128 char or under and not empty");
 			}
+
+		    $topic = Topic::create($core, $id, $label);
+			$topics[] = $topic;
 			$json[] = $topic->serializeToJson();
 		}
 
@@ -69,7 +80,7 @@ class PersonalizedStreamsClient {
 		return $topics;
 	}
 
-	public static function patchTopics($core, $topics) {
+	public static function deleteTopics($core, $topics) {
 		$data = json_encode(array("delete" => self::getTopicIds($topics)));
 		$url =  self::getTopicsUrl($core);
 
@@ -97,7 +108,7 @@ class PersonalizedStreamsClient {
 		return $body->{"topicIds"};
 	}
 
-	public static function postCollectionTopics($site, $collectionId, $topics) {
+	public static function addCollectionTopics($site, $collectionId, $topics) {
 		$data = json_encode(array("topicIds" => self::getTopicIds($topics)));
 		$url = self::getCollectionTopicsUrl($site, $collectionId);
 
@@ -111,7 +122,7 @@ class PersonalizedStreamsClient {
 		return $body->{"added"};
 	}
 
-	public static function putCollectionTopics($site, $collectionId, $topics) {
+	public static function replaceCollectionTopics($site, $collectionId, $topics) {
 		$data = json_encode(array("topicIds" => self::getTopicIds($topics)));
 		$url = self::getCollectionTopicsUrl($site, $collectionId);
 
@@ -122,7 +133,7 @@ class PersonalizedStreamsClient {
 			|| (property_exists($body, "removed") && $body->{"removed"} > 0)));
 	}
 
-	public static function patchCollectionTopics($site, $collectionId, $topics) {
+	public static function removeCollectionTopics($site, $collectionId, $topics) {
 		$data = json_encode(array("delete" => self::getTopicIds($topics)));
 		$url = self::getCollectionTopicsUrl($site, $collectionId);
 
@@ -155,7 +166,7 @@ class PersonalizedStreamsClient {
 		return $subscriptions;
 	}
 
-	public static function postSubscriptions($network, $userId, $topics) {
+	public static function addSubscriptions($network, $userId, $topics) {
 		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userId)));
 		$url = self::getSubscriptionUrl($network, $userId);
 
@@ -169,7 +180,7 @@ class PersonalizedStreamsClient {
 		return $body->{"added"};
 	}
 
-	public static function putSubscriptions($network, $userId, $topics) {
+	public static function replaceSubscriptions($network, $userId, $topics) {
 		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userId)));
 		$url = self::getSubscriptionUrl($network, $userId);
 
@@ -180,7 +191,7 @@ class PersonalizedStreamsClient {
 			|| (property_exists($body, "removed") && $body->{"removed"} > 0)));
 	}
 
-	public static function patchSubscriptions($network, $userId, $topics) {
+	public static function removeSubscriptions($network, $userId, $topics) {
 		$data = json_encode(array("delete" => self::buildSubscriptions($topics, $userId)));
 		$url = self::getSubscriptionUrl($network, $userId);
 
