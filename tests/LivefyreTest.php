@@ -11,20 +11,26 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
     const SITE_ID = "<SITE-ID>";
     const SITE_KEY = "<SITE-KEY>";
     const COLLECTION_ID = "<COLLECTION-ID>";
-    const USER = "<USER-ID>";
+    const USER_ID = "<USER-ID>";
     const ARTICLE_ID = "<ARTICLE-ID>";
 
-/*
+    /*
     public function testApi() {
         $network = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY);
         $this->assertTrue($network->setUserSyncUrl("url/{id}"));
         $this->assertTrue($network->syncUser("username"));
 
         $site = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY)->getSite(self::SITE_ID, self::SITE_KEY);
-        print($site->getCollectionId(self::ARTICLE_ID));
+
+        $name = "PHPCreateCollection" . time();
+
+        $id = $site->createCollection($name, $name, "http://answers.livefyre.com/PHP");
+        $otherId = $site->getCollectionId($name);
+
+        $this->assertEquals($id, $otherId);
         var_dump($site->getCollectionContent(self::ARTICLE_ID));
-    }
-*/
+    }*/
+
 	/**
 	 * @covers Livefyre::getNetwork->setUserSyncUrl()
 	 * @expectedException InvalidArgumentException

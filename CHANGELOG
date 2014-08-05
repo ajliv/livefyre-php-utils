@@ -2,6 +2,7 @@
 
 *** CAUTION: THIS VERSION HAS UPDATED METHODS THAT MAKE PREVIOUS FUNCTION CALLS OBSOLETE ***
 * Added timeline support.
+* Added createCollection method.
 * Updated createCollectionMeta() to take in optional param in an array.
 * Added support for making calls using the WP client.
 * Updated checksum formula.

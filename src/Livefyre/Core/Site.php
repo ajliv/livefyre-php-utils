@@ -56,6 +56,20 @@ class Site {
 		return md5(json_encode($checksum, JSON_UNESCAPED_SLASHES));
 	}
 
+	public function createCollection($title, $articleId, $url, $options = array()) {
+		$token = $this->buildCollectionMetaToken($title, $articleId, $url, $options);
+		$checksum = $this->buildChecksum($title, $url, array_key_exists("tags", $options) ? $options["tags"] : "");
+		$uri = sprintf("https://%s.quill.fyre.co/api/v3.0/site/%s/collection/create/", $this->getNetworkName(), $this->_id) . "?sync=1";
+		$data = json_encode(array("articleId" => $articleId, "collectionMeta" => $token, "checksum" => $checksum));
+		$headers = array("Content-Type" => "application/json", "Accepts" => "application/json");
+
+		$response = Client::POST($uri, $headers, $data);
+		if ($response->status_code === 200) {
+			return json_decode($response->body)->{"data"}->{"collectionId"};
+		}
+		return NULL;
+	}
+
 	public function getCollectionContent($articleId) {
 		$url = sprintf("https://bootstrap.livefyre.com/bs3/%s/%s/%s/init", $this->_network->getName(), $this->_id, base64_encode($articleId));
 		$response = Client::GET($url);

@@ -213,7 +213,7 @@ class PersonalizedStreamsClient {
 	}
 
 	public static function getSubscribers($network, $topic, $limit = 100, $offset = 0) {
-		$url = self::getUrl($network) . $topic->getId() . self::SUBSCRIBER_URL_PATH;
+		$url = self::getUrl($network) . $topic->getId() . self::SUBSCRIBER_URL_PATH  . "?limit=" . $limit . "&offset=" . $offset; ;
 
 		$response = Client::GET($url, self::getHeaders($network));
 		
