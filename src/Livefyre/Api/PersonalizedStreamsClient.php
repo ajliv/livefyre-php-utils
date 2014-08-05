@@ -6,6 +6,7 @@ use Livefyre\Routing\Client;
 use Livefyre\Entity\Topic;
 use Livefyre\Entity\Subscription;
 use Livefyre\Entity\SubscriptionType;
+use Livefyre\Utils\JWT;
 
 class PersonalizedStreamsClient {
 
@@ -149,7 +150,7 @@ class PersonalizedStreamsClient {
 
 	/* UserSubscription API */
 	public static function getSubscriptions($network, $userId) {
-		$url = self::getSubscriptionUrl($network, $userId);
+		$url = self::getSubscriptionUrl($network, $network->getUserUrn($userId));
 
 		$response = Client::GET($url, self::getHeaders($network));
 
@@ -166,11 +167,13 @@ class PersonalizedStreamsClient {
 		return $subscriptions;
 	}
 
-	public static function addSubscriptions($network, $userId, $topics) {
-		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userId)));
-		$url = self::getSubscriptionUrl($network, $userId);
+	public static function addSubscriptions($network, $userToken, $topics) {
+		$userId = JWT::decode($userToken, $network->getKey())->user_id;
+		$userUrn = $network->getUserUrn($userId);
+		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userUrn)));
+		$url = self::getSubscriptionUrl($network, $userUrn);
 
-		$response = Client::POST($url, self::getHeaders($network, $userId), $data);
+		$response = Client::POST($url, self::getHeaders($network, $userToken), $data);
 
 		$body = self::getData($response);
 		if (!property_exists($body, "added")) {
@@ -180,22 +183,26 @@ class PersonalizedStreamsClient {
 		return $body->{"added"};
 	}
 
-	public static function replaceSubscriptions($network, $userId, $topics) {
-		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userId)));
-		$url = self::getSubscriptionUrl($network, $userId);
+	public static function replaceSubscriptions($network, $userToken, $topics) {
+		$userId = JWT::decode($userToken, $network->getKey())->user_id;
+		$userUrn = $network->getUserUrn($userId);
+		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userUrn)));
+		$url = self::getSubscriptionUrl($network, $userUrn);
 
-		$response = Client::PUT($url, self::getHeaders($network, $userId), $data);
+		$response = Client::PUT($url, self::getHeaders($network, $userToken), $data);
 
 		$body = self::getData($response);
 		return (!((property_exists($body, "added") && $body->{"added"} > 0)
 			|| (property_exists($body, "removed") && $body->{"removed"} > 0)));
 	}
 
-	public static function removeSubscriptions($network, $userId, $topics) {
-		$data = json_encode(array("delete" => self::buildSubscriptions($topics, $userId)));
-		$url = self::getSubscriptionUrl($network, $userId);
+	public static function removeSubscriptions($network, $userToken, $topics) {
+		$userId = JWT::decode($userToken, $network->getKey())->user_id;
+		$userUrn = $network->getUserUrn($userId);
+		$data = json_encode(array("delete" => self::buildSubscriptions($topics, $userUrn)));
+		$url = self::getSubscriptionUrl($network, $userUrn);
 
-		$response = Client::PATCH($url, self::getHeaders($network, $userId), $data);
+		$response = Client::PATCH($url, self::getHeaders($network, $userToken), $data);
 		
 		$body = self::getData($response);
 		if (!property_exists($body, "removed")) {
@@ -238,8 +245,8 @@ class PersonalizedStreamsClient {
 	}
 
 	/* Helper Methods */
-	private static function getHeaders($core, $userId = null) {
-		$token = ($userId === null) ? $core->buildLivefyreToken() : $core->buildUserAuthToken($userId, "", Network::DEFAULT_EXPIRES);
+	private static function getHeaders($core, $userToken = null) {
+		$token = ($userToken === null) ? $core->buildLivefyreToken() : $userToken;
 		return array(
 			"Authorization" => "lftoken " . $token,
 			"Content-Type" => "application/json"
@@ -258,8 +265,8 @@ class PersonalizedStreamsClient {
 		return self::getUrl($site) . $site->getUrn() . sprintf(self::COLLECTION_TOPICS_URL_PATH, $collectionId);
 	}
 
-	private static function getSubscriptionUrl($network, $user) {
-		return self::getUrl($network) . $network->getUserUrn($user) . self::SUBSCRIPTION_URL_PATH;
+	private static function getSubscriptionUrl($network, $userUrn) {
+		return self::getUrl($network) . $userUrn . self::SUBSCRIPTION_URL_PATH;
 	}
 
 	private static function getTimelineUrl($core) {
@@ -274,10 +281,10 @@ class PersonalizedStreamsClient {
 		return $topicIds;
 	}
 
-	private static function buildSubscriptions($topics, $userId) {
+	private static function buildSubscriptions($topics, $userUrn) {
 		$subscriptions = array();
 		foreach($topics as &$topic) {
-			$subscriptions[] = (new Subscription($topic->getId(), $userId, SubscriptionType::personalStream))->serializeToJson();
+			$subscriptions[] = (new Subscription($topic->getId(), $userUrn, SubscriptionType::personalStream))->serializeToJson();
 		}
 		return $subscriptions;
 	}

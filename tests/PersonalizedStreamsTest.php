@@ -11,7 +11,7 @@ class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
     const SITE_ID = "<SITE-ID>";
     const SITE_KEY = "<SITE-KEY>";
     const COLLECTION_ID = "<COLLECTION-ID>";
-    const USER = "<USER-ID>";
+    const USER_ID = "<USER-ID>";
     const ARTICLE_ID = "<ARTICLE-ID>";
 
     private $_network;
@@ -86,19 +86,20 @@ class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
 
     public function testSubscriptions() {
         $network = $this->_network;
+        $userToken = $network->buildUserAuthToken(self::USER_ID, self::USER_ID . "@" . self::NETWORK_NAME, $network::DEFAULT_EXPIRES);
 
         $topic1 = PersonalizedStreamsClient::createOrUpdateTopic($network, "1", "HANA");
         $topic2 = PersonalizedStreamsClient::createOrUpdateTopic($network, "2", "DUL");
 
         PersonalizedStreamsClient::getSubscriptions($network, self::USER_ID);
 
-        PersonalizedStreamsClient::addSubscriptions($network, self::USER_ID, array($topic1, $topic2));
+        PersonalizedStreamsClient::addSubscriptions($network, $userToken, array($topic1, $topic2));
 
-        PersonalizedStreamsClient::replaceSubscriptions($network, self::USER_ID, array($topic2));
+        PersonalizedStreamsClient::replaceSubscriptions($network, $userToken, array($topic2));
 
         PersonalizedStreamsClient::getSubscribers($network, $topic1);
 
-        PersonalizedStreamsClient::removeSubscriptions($network, self::USER_ID, array($topic2));
+        PersonalizedStreamsClient::removeSubscriptions($network, $userToken, array($topic2));
 
         PersonalizedStreamsClient::deleteTopic($network, $topic1);
     }
