@@ -1,10 +1,8 @@
 <?php
 namespace Livefyre\Core;
 
-use Livefyre\Utils\JWT;
-use Livefyre\Api\PersonalizedStreams;
-use Livefyre\Api\Entity\Topic;
 use Livefyre\Routing\Client;
+use Livefyre\Utils\JWT;
 
 class Network {
 	const DEFAULT_USER = "system";
@@ -12,10 +10,12 @@ class Network {
 
 	private $_name;
 	private $_key;
+	private $_networkName;
 
 	public function __construct($name, $key) {
 		$this->_name = $name;
 		$this->_key = $key;
+		$this->_networkName = explode(".", $name)[0];
 	}
 
 	public function setUserSyncUrl($urlTemplate) {
@@ -70,61 +70,16 @@ class Network {
 		return new Site($this, $siteId, $siteKey);
 	}
 
-	/* Topics */
-	public function getTopic($id) {
-		return PersonalizedStreams::getTopic($this, $id);
-	}
-	public function createOrUpdateTopic($id, $label) {
-		$topic = Topic::generate($this, $id, $label);
-
-		return PersonalizedStreams::postTopic($this, $topic);
-	}
-	public function deleteTopic($topic) {
-		return PersonalizedStreams::patchTopic($this, $topic);
-	}
-
-	public function getTopics($limit = 100, $offset = 0) {
-		return PersonalizedStreams::getTopics($this, $limit, $offset);
-	}
-	public function createOrUpdateTopics($topicMap) {
-		$topics = array();
-		foreach ($topicMap as $id => $label) {
-		    array_push($topics, Topic::generate($this, $id, $label));
-		}
-
-		return PersonalizedStreams::postTopics($this, $topics);
-	}
-	public function deleteTopics($topics) {
-		return PersonalizedStreams::patchTopics($this, $topics);
-	}
-
-	/* User Subscriptions */
-	public function getSubscriptions($userId) {
-		return PersonalizedStreams::getSubscriptions($this, $userId);
-	}
-	public function addSubscriptions($userId, $topics) {
-		return PersonalizedStreams::postSubscriptions($this, $userId, $topics);
-	}
-	public function updateSubscriptions($userId, $topics) {
-		return PersonalizedStreams::putSubscriptions($this, $userId, $topics);
-	}
-	public function removeSubscriptions($userId, $topics) {
-		return PersonalizedStreams::patchSubscriptions($this, $userId, $topics);
-	}
-	public function getSubscribers($topic, $limit = 100, $offset = 0) {
-        return PersonalizedStreams::getSubscribers($this, $topic, $limit, $offset);
-    }
-
 	/* Getters */
 	public function getUrn() {
 		return "urn:livefyre:" . $this->_name;
 	}
-	public function getNetworkName() {
-		return $this->getName();
-	}
 	public function getUserUrn($user) {
         return $this->getUrn().":user=".$user;
     }
+	public function getNetworkName() {
+		return $this->_networkName;
+	}
     public function getName() {
     	return $this->_name;
     }

@@ -1,7 +1,7 @@
 <?php
-namespace Livefyre\Api\Entity;
+namespace Livefyre\Entity;
 
-use Livefyre\Api\Entity\SubscriptionType;
+use Livefyre\Entity\SubscriptionType;
 
 class Subscription {
 
@@ -10,14 +10,18 @@ class Subscription {
 	private $type;
 	private $createdAt;
 
-	public function __construct($to, $by, $type, $createdAt = NULL) {
+	public function __construct($to, $by, $type, $createdAt = null) {
+		$this->to = $to;
 		$this->by = $by;
 		$this->type = $type;
-		$this->to = $to;
 		$this->createdAt = $createdAt;
 	}
 
-    public function jsonSerialize() {
+	public static function serializeFromJson($json) {
+		return new self($json->{"to"}, $json->{"by"}, $json->{"type"}, $json->{"createdAt"});
+	}
+
+    public function serializeToJson() {
     	return array_filter(get_object_vars($this));
 	}
 
@@ -46,5 +50,3 @@ class Subscription {
 		$this->createdAt = $createdAt;
 	}
 }
-
-

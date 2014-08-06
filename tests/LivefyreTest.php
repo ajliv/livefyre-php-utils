@@ -11,17 +11,25 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
     const SITE_ID = "<SITE-ID>";
     const SITE_KEY = "<SITE-KEY>";
     const COLLECTION_ID = "<COLLECTION-ID>";
+    const USER_ID = "<USER-ID>";
     const ARTICLE_ID = "<ARTICLE-ID>";
 
-    // public function testApi() {
-    //     $network = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY);
-    //     $this->assertTrue($network->setUserSyncUrl("url/{id}"));
-    //     $this->assertTrue($network->syncUser("username"));
+    /*
+    public function testApi() {
+        $network = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY);
+        $this->assertTrue($network->setUserSyncUrl("url/{id}"));
+        $this->assertTrue($network->syncUser("username"));
 
-    //     $site = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY)->getSite(self::SITE_ID, $siteSecret);
-    //     print($site->getCollectionId(articleId));
-    //     var_dump($site->getCollectionContent(articleId));
-    // }
+        $site = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY)->getSite(self::SITE_ID, self::SITE_KEY);
+
+        $name = "PHPCreateCollection" . time();
+
+        $id = $site->createCollection($name, $name, "http://answers.livefyre.com/PHP");
+        $otherId = $site->getCollectionId($name);
+
+        $this->assertEquals($id, $otherId);
+        var_dump($site->getCollectionContent(self::ARTICLE_ID));
+    }*/
 
 	/**
 	 * @covers Livefyre::getNetwork->setUserSyncUrl()
@@ -55,7 +63,7 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
 	 */
     public function testSiteBuildCollectionMetaToken_badUrl() {
     	$site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-    	$site->buildCollectionMetaToken("title", "articleId", "url", "tags");
+    	$site->buildCollectionMetaToken("title", "articleId", "url");
     }
 
 	/**
@@ -64,7 +72,7 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
 	 */
     public function testSiteBuildCollectionMetaToken_badTitle() {
     	$site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-    	$site->buildCollectionMetaToken("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com", "tags");
+    	$site->buildCollectionMetaToken("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com");
     }
 
     /**
@@ -73,23 +81,23 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
      */
     public function testSiteBuildCollectionMetaToken_badType() {
         $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-        $site->buildCollectionMetaToken("title", "articleId", "http://livefyre.com", "tags", "badType");
+        $site->buildCollectionMetaToken("title", "articleId", "http://livefyre.com", array("type"=>"badType"));
     }
 
     public function testSiteBuildCollectionMetaToken() {
         $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-        $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags");
+        $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com");
     }
 
     public function testSiteBuildCollectionMetaToken_goodScenarios() {
         $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
         
-        $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags", "reviews");
+        $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", array("tags"=>"tags", "type"=>"reviews"));
         $decoded = JWT::decode($token, "siteSecret");
 
         $this->assertEquals("reviews", $decoded->{"type"});
 
-        $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", "tags", "liveblog");
+        $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", array("type"=>"liveblog"));
         $decoded = JWT::decode($token, "siteSecret");
 
         $this->assertEquals("liveblog", $decoded->{"type"});
@@ -117,7 +125,7 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
         $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
         $checksum = $site->buildChecksum("title", "https://www.url.com", "tags");
 
-        $this->assertEquals("6e2e4faf7b95f896260fe695eafb34ba", $checksum);
+        $this->assertEquals("4464458a10c305693b5bf4d43a384be7", $checksum);
     }
 
     public function testSiteValidUrls() {

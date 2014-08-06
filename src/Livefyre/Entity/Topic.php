@@ -1,33 +1,36 @@
 <?php
-namespace Livefyre\Api\Entity;
+namespace Livefyre\Entity;
 
 class Topic {
 
     const TOPIC_IDEN = ":topic=";
 	private $id;
 	private $label;
-	private $createdAt = 0;
-	private $modifiedAt = 0;
+	private $createdAt;
+	private $modifiedAt;
 
-	public function __construct() { }
+	public function __construct($id, $label, $createdAt = null, $modifiedAt = null) {
+		$this->id = $id;
+		$this->label = $label;
+		$this->createdAt = $createdAt;
+		$this->modifiedAt = $modifiedAt;
+	}
 
 	/* new instances should use this method */
-	public static function generate($obj, $id, $label) {
-		return self::copy(self::generateUrn($obj, $id), $label, NULL, NULL);
+	public static function create($core, $id, $label) {
+		return new self(self::generateUrn($core, $id), $label);
 	}
 
-	public static function copy($id, $label, $createdAt, $modifiedAt) {
-		$instance = new self();
-    	$instance->setId($id);
-    	$instance->setLabel($label);
-    	$instance->setCreatedAt($createdAt);
-    	$instance->setModifiedAt($modifiedAt);
-    	return $instance;
-	}
-
-    public static function generateUrn($obj, $id) {
-        return $obj->getUrn() . self::TOPIC_IDEN . $id;
+    public static function generateUrn($core, $id) {
+        return $core->getUrn() . self::TOPIC_IDEN . $id;
     }
+
+	public static function serializeFromJson($json) {
+		return new self($json->{"id"}, $json->{"label"}, $json->{"createdAt"}, $json->{"modifiedAt"});
+	}
+    public function serializeToJson() {
+    	return array_filter(get_object_vars($this));
+	}
 
     public function getTruncatedId() {
     	$id = $this->id;
@@ -39,9 +42,6 @@ class Topic {
 	public function getModifiedAtDate() {
     	return date('r', $this->modifiedAt);
     }
-    public function jsonSerialize() {
-    	return array_filter(get_object_vars($this));
-	}
 
 	public function getId() {
 		return $this->id;

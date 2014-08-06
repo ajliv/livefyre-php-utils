@@ -10,7 +10,7 @@ Works with PHP5.
 If using Composer, add this to your composer.json:
 
 	"require": {
-        "livefyre/livefyre-php-utils": "1.2.0"
+        "livefyre/livefyre-php-utils": "1.3.0"
     }
 
 ## Usage
@@ -53,10 +53,10 @@ $site = $network->getSite("siteId", "siteKey");
 ```
 
 Building a collection meta token:
-*The 'tags' and type' arguments are optional.*
+*The {options} argument is optional.*
 
 ```php
-$site->buildCollectionMetaToken("title", "articleId", "url", "tags", "type");
+$site->buildCollectionMetaToken("title", "articleId", "url", {options});
 ```
 
 Building a checksum:
@@ -78,7 +78,7 @@ To get a content collection's id:
 $site->getCollectionId("articleId");
 ```
 
-## Documentation
+## Additional Documentation
 
 Located [here](http://answers.livefyre.com/developers/libraries).
 
