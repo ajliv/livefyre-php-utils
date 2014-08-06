@@ -4,8 +4,6 @@ namespace Livefyre\Core;
 use Livefyre\Utils\JWT;
 use Livefyre\Utils\IDNA;
 use Livefyre\Routing\Client;
-use Livefyre\Api\PersonalizedStreamsClient;
-use Livefyre\Entity\Topic;
 
 class Site {
 	private $_network;

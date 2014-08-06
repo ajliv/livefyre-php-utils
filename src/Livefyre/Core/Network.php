@@ -1,9 +1,6 @@
 <?php
 namespace Livefyre\Core;
 
-use Livefyre\Api\PersonalizedStreamsClient;
-use Livefyre\Entity\Topic;
-use Livefyre\Factory\CursorFactory;
 use Livefyre\Routing\Client;
 use Livefyre\Utils\JWT;
 

@@ -2,16 +2,16 @@
 namespace Livefyre\Test;
 
 use Livefyre\Livefyre;
-use Livefyre\Api\PersonalizedStreamsClient;
+use Livefyre\Api\PersonalizedStream;
 use Livefyre\Factory\CursorFactory;
 
-class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
+class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
     const NETWORK_NAME = "<NETWORK-NAME>";
     const NETWORK_KEY = "<NETWORK-KEY>";
     const SITE_ID = "<SITE-ID>";
     const SITE_KEY = "<SITE-KEY>";
     const COLLECTION_ID = "<COLLECTION-ID>";
-    const USER_ID = "<USER-ID>";
+    const USER = "<USER-ID>";
     const ARTICLE_ID = "<ARTICLE-ID>";
 
     private $_network;
@@ -28,80 +28,80 @@ class PersonalizedStreamsClientTest extends \PHPUnit_Framework_TestCase {
     
     public function testNetworkTopicApi() {
         $network = $this->_network;
-        $topic = PersonalizedStreamsClient::createOrUpdateTopic($network, "1", "UNO");
+        $topic = PersonalizedStream::createOrUpdateTopic($network, "1", "UNO");
         $this->assertFalse($topic === null);
 
-        $topic = PersonalizedStreamsClient::getTopic($network, "1");
+        $topic = PersonalizedStream::getTopic($network, "1");
         $this->assertFalse($topic->getCreatedAt() === null);
 
-        $this->assertTrue(PersonalizedStreamsClient::deleteTopic($network, $topic));
+        $this->assertTrue(PersonalizedStream::deleteTopic($network, $topic));
 
 
-        $topics = PersonalizedStreamsClient::createOrUpdateTopics($network, array("1", "UNO"));
+        $topics = PersonalizedStream::createOrUpdateTopics($network, array("1", "UNO"));
         $this->assertFalse($topics === null);
 
-        $topics = PersonalizedStreamsClient::getTopics($network);
+        $topics = PersonalizedStream::getTopics($network);
         $this->assertFalse(sizeof($topics) === 1);
 
-        PersonalizedStreamsClient::deleteTopics($network, $topics);
+        PersonalizedStream::deleteTopics($network, $topics);
     }
 
     public function testSiteTopicApi() {
         $site = $this->_site;
-        $topic = PersonalizedStreamsClient::createOrUpdateTopic($site, "2", "DUL");
+        $topic = PersonalizedStream::createOrUpdateTopic($site, "2", "DUL");
         $this->assertFalse($topic === null);
 
-        $topic = PersonalizedStreamsClient::getTopic($site, "2");
+        $topic = PersonalizedStream::getTopic($site, "2");
         $this->assertFalse($topic->getCreatedAt() === null);
 
-        $this->assertTrue(PersonalizedStreamsClient::deleteTopic($site, $topic));
+        $this->assertTrue(PersonalizedStream::deleteTopic($site, $topic));
 
 
-        $topics = PersonalizedStreamsClient::createOrUpdateTopics($site, array("2", "DUL"));
+        $topics = PersonalizedStream::createOrUpdateTopics($site, array("2", "DUL"));
         $this->assertFalse($topics === null);
 
-        $topics = PersonalizedStreamsClient::getTopics($site);
+        $topics = PersonalizedStream::getTopics($site);
         $this->assertFalse(sizeof($topics) === 1);
 
-        PersonalizedStreamsClient::deleteTopics($site, $topics);
+        PersonalizedStream::deleteTopics($site, $topics);
     }
     
     public function testCollectionTopicApi() {
         $site = $this->_site;
 
-        PersonalizedStreamsClient::getCollectionTopics($site, self::COLLECTION_ID);
+        PersonalizedStream::getCollectionTopics($site, self::COLLECTION_ID);
 
-        $topic2 = PersonalizedStreamsClient::createOrUpdateTopic($site, "2", "DUL");
+        $topic2 = PersonalizedStream::createOrUpdateTopic($site, "2", "DUL");
 
-        PersonalizedStreamsClient::addCollectionTopics($site, self::COLLECTION_ID, array($topic2));
+        PersonalizedStream::addCollectionTopics($site, self::COLLECTION_ID, array($topic2));
 
-        $topic1 = PersonalizedStreamsClient::createOrUpdateTopic($site, "1", "HANA");
+        $topic1 = PersonalizedStream::createOrUpdateTopic($site, "1", "HANA");
 
-        PersonalizedStreamsClient::replaceCollectionTopics($site, self::COLLECTION_ID, array($topic1));
+        PersonalizedStream::replaceCollectionTopics($site, self::COLLECTION_ID, array($topic1));
 
-        PersonalizedStreamsClient::removeCollectionTopics($site, self::COLLECTION_ID, array($topic1, $topic2));
+        PersonalizedStream::removeCollectionTopics($site, self::COLLECTION_ID, array($topic1, $topic2));
 
-        PersonalizedStreamsClient::deleteTopics($site, array($topic1, $topic2));
+        PersonalizedStream::deleteTopics($site, array($topic1, $topic2));
     }
 
     public function testSubscriptions() {
         $network = $this->_network;
         $userToken = $network->buildUserAuthToken(self::USER_ID, self::USER_ID . "@" . self::NETWORK_NAME, $network::DEFAULT_EXPIRES);
 
-        $topic1 = PersonalizedStreamsClient::createOrUpdateTopic($network, "1", "HANA");
-        $topic2 = PersonalizedStreamsClient::createOrUpdateTopic($network, "2", "DUL");
+        $topic1 = PersonalizedStream::createOrUpdateTopic($network, "1", "HANA");
+        $topic2 = PersonalizedStream::createOrUpdateTopic($network, "2", "DUL");
 
-        PersonalizedStreamsClient::getSubscriptions($network, self::USER_ID);
+        PersonalizedStream::getSubscriptions($network, self::USER_ID);
 
-        PersonalizedStreamsClient::addSubscriptions($network, $userToken, array($topic1, $topic2));
+        PersonalizedStream::addSubscriptions($network, $userToken, array($topic1, $topic2));
 
-        PersonalizedStreamsClient::replaceSubscriptions($network, $userToken, array($topic2));
+        PersonalizedStream::replaceSubscriptions($network, $userToken, array($topic2));
 
-        PersonalizedStreamsClient::getSubscribers($network, $topic1);
+        PersonalizedStream::getSubscribers($network, $topic1);
 
-        PersonalizedStreamsClient::removeSubscriptions($network, $userToken, array($topic2));
+        PersonalizedStream::removeSubscriptions($network, $userToken, array($topic2));
 
-        PersonalizedStreamsClient::deleteTopic($network, $topic1);
+        PersonalizedStream::deleteTopic($network, $topic1);
     }
 
     public function testTimelineStream() {

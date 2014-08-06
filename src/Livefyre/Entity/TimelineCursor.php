@@ -1,7 +1,7 @@
 <?php
 namespace Livefyre\Entity;
 
-use Livefyre\Api\PersonalizedStreamsClient;
+use Livefyre\Api\PersonalizedStream;
 
 class TimelineCursor {
 
@@ -24,7 +24,7 @@ class TimelineCursor {
 	public function next($limit = null) {
 		$limit = (is_null($limit)) ? $this->_limit : $limit;
 
-		$data = PersonalizedStreamsClient::getTimelineStream($this->_core, $this->_resource, $limit, null, $this->_cursorTime);
+		$data = PersonalizedStream::getTimelineStream($this->_core, $this->_resource, $limit, null, $this->_cursorTime);
 		$cursor = $data->{"meta"}->{"cursor"};
 		
 		$this->_next = $cursor->{"hasNext"};
@@ -37,7 +37,7 @@ class TimelineCursor {
 	public function previous($limit = null) {
 		$limit = (is_null($limit)) ? $this->_limit : $limit;
 
-		$data = PersonalizedStreamsClient::getTimelineStream($this->_core, $this->_resource, $limit, $this->_cursorTime, null);
+		$data = PersonalizedStream::getTimelineStream($this->_core, $this->_resource, $limit, $this->_cursorTime, null);
 		$cursor = $data->{"meta"}->{"cursor"};
 		
 		$this->_previous = $cursor->{"hasPrev"};

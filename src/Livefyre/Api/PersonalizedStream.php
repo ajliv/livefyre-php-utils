@@ -8,7 +8,7 @@ use Livefyre\Entity\Subscription;
 use Livefyre\Entity\SubscriptionType;
 use Livefyre\Utils\JWT;
 
-class PersonalizedStreamsClient {
+class PersonalizedStream {
 
 	const BASE_URL = "https://%s.quill.fyre.co/api/v4/";
 	const STREAM_URL = "https://bootstrap.livefyre.com/api/v4/";
