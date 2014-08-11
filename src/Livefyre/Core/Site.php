@@ -4,6 +4,7 @@ namespace Livefyre\Core;
 use Livefyre\Utils\JWT;
 use Livefyre\Utils\IDNA;
 use Livefyre\Routing\Client;
+use Livefyre\Api\Domain;
 
 class Site {
 	private $_network;
@@ -57,7 +58,7 @@ class Site {
 	public function createCollection($title, $articleId, $url, $options = array()) {
 		$token = $this->buildCollectionMetaToken($title, $articleId, $url, $options);
 		$checksum = $this->buildChecksum($title, $url, array_key_exists("tags", $options) ? $options["tags"] : "");
-		$uri = sprintf("https://%s.quill.fyre.co/api/v3.0/site/%s/collection/create/", $this->getNetworkName(), $this->_id) . "?sync=1";
+		$uri = sprintf("%s/api/v3.0/site/%s/collection/create/", Domain::quill($this), $this->_id) . "?sync=1";
 		$data = json_encode(array("articleId" => $articleId, "collectionMeta" => $token, "checksum" => $checksum));
 		$headers = array("Content-Type" => "application/json", "Accepts" => "application/json");
 
@@ -69,7 +70,7 @@ class Site {
 	}
 
 	public function getCollectionContent($articleId) {
-		$url = sprintf("https://bootstrap.livefyre.com/bs3/%s/%s/%s/init", $this->_network->getName(), $this->_id, base64_encode($articleId));
+		$url = sprintf("%s/bs3/%s/%s/%s/init", Domain::bootstrap($this), $this->_network->getName(), $this->_id, base64_encode($articleId));
 		$response = Client::GET($url);
 
 		return json_decode($response->body);

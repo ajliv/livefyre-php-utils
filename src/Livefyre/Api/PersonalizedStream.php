@@ -7,11 +7,12 @@ use Livefyre\Entity\Topic;
 use Livefyre\Entity\Subscription;
 use Livefyre\Entity\SubscriptionType;
 use Livefyre\Utils\JWT;
+use Livefyre\Api\Domain;
 
 class PersonalizedStream {
 
-	const BASE_URL = "https://%s.quill.fyre.co/api/v4/";
-	const STREAM_URL = "https://bootstrap.livefyre.com/api/v4/";
+	const BASE_URL = "%s/api/v4/";
+	const STREAM_URL = "%s/api/v4/";
 
 	const NETWORK_TOPICS_URL_PATH = ":topics/";
 	const COLLECTION_TOPICS_URL_PATH = ":collection=%s:topics/";
@@ -254,7 +255,7 @@ class PersonalizedStream {
 	}
 
 	private static function getUrl($core) {
-		return sprintf(self::BASE_URL, $core->getNetworkName());
+		return sprintf(self::BASE_URL, Domain::quill($core));
 	}
 
 	private static function getTopicsUrl($core) {
@@ -270,7 +271,7 @@ class PersonalizedStream {
 	}
 
 	private static function getTimelineUrl($core) {
-		return self::STREAM_URL . self::TIMELINE_PATH;
+		return sprintf(self::STREAM_URL, Domain::bootstrap($core)) . self::TIMELINE_PATH;
 	}
 
 	private static function getTopicIds($topics) {

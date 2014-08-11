@@ -1,26 +1,25 @@
 <?php
-namespace Livefyre\Test;
+namespace Livefyre;
 
 use Livefyre\Utils\JWT;
-use Livefyre\Livefyre;
+use Livefyre\LfTest;
 
-class LivefyreTest extends \PHPUnit_Framework_TestCase {
+class CoreTest extends \PHPUnit_Framework_TestCase {
+    private $_config;
 
-    const NETWORK_NAME = "<NETWORK-NAME>";
-    const NETWORK_KEY = "<NETWORK-KEY>";
-    const SITE_ID = "<SITE-ID>";
-    const SITE_KEY = "<SITE-KEY>";
-    const COLLECTION_ID = "<COLLECTION-ID>";
-    const USER_ID = "<USER-ID>";
-    const ARTICLE_ID = "<ARTICLE-ID>";
+    protected function setUp() {
+        $this->_config = new LfTest();
+        $this->_config->setPropValues("prod");
+    }
 
-    /*
     public function testApi() {
-        $network = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY);
+        $this->markTestSkipped("can't make network calls to bad params.");
+
+        $network = Livefyre::getNetwork($this->_config->NETWORK_NAME, $this->_config->NETWORK_KEY);
         $this->assertTrue($network->setUserSyncUrl("url/{id}"));
         $this->assertTrue($network->syncUser("username"));
 
-        $site = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY)->getSite(self::SITE_ID, self::SITE_KEY);
+        $site = Livefyre::getNetwork($this->_config->NETWORK_NAME, $this->_config->NETWORK_KEY)->getSite($this->_config->SITE_ID, $this->_config->SITE_KEY);
 
         $name = "PHPCreateCollection" . time();
 
@@ -28,15 +27,15 @@ class LivefyreTest extends \PHPUnit_Framework_TestCase {
         $otherId = $site->getCollectionId($name);
 
         $this->assertEquals($id, $otherId);
-        var_dump($site->getCollectionContent(self::ARTICLE_ID));
-    }*/
+        var_dump($site->getCollectionContent($this->_config->ARTICLE_ID));
+    }
 
 	/**
 	 * @covers Livefyre::getNetwork->setUserSyncUrl()
 	 * @expectedException InvalidArgumentException
 	 */
     public function testNetworkUserSyncUrl() {
-        $network = Livefyre::getNetwork(self::NETWORK_NAME, self::NETWORK_KEY);
+        $network = Livefyre::getNetwork($this->_config->NETWORK_NAME, $this->_config->NETWORK_KEY);
         $network->setUserSyncUrl("www.test.com");
     }
 

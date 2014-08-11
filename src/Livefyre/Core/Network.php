@@ -3,6 +3,7 @@ namespace Livefyre\Core;
 
 use Livefyre\Routing\Client;
 use Livefyre\Utils\JWT;
+use Livefyre\Api\Domain;
 
 class Network {
 	const DEFAULT_USER = "system";
@@ -15,6 +16,7 @@ class Network {
 	public function __construct($name, $key) {
 		$this->_name = $name;
 		$this->_key = $key;
+		$this->_ssl = true;
 		$this->_networkName = explode(".", $name)[0];
 	}
 
@@ -23,7 +25,7 @@ class Network {
 			throw new \InvalidArgumentException("urlTemplate should contain {id}");
 		}
 
-		$url = sprintf("http://%s", $this->_name);
+		$url = sprintf("%s", Domain::quill($this));
 		$data = array("actor_token" => $this->buildLivefyreToken(), "pull_profile_url" => $urlTemplate);
 		$response = Client::POST($url, array(), $data);
 		
@@ -32,7 +34,7 @@ class Network {
 
 	public function syncUser($userId) {
 		$data = array("lftoken" => $this->buildLivefyreToken());
-		$url = sprintf("http://%s/api/v3_0/user/%s/refresh", $this->_name, $userId);
+		$url = sprintf("%s/api/v3_0/user/%s/refresh", Domain::quill($this), $userId);
 
 		$response = Client::POST($url, array(), $data);
 		
@@ -85,5 +87,11 @@ class Network {
     }
     public function getKey() {
     	return $this->_key;
+    }
+    public function isSsl() {
+    	return $this->_ssl;
+    }
+    public function setSsl($ssl) {
+    	$this->_ssl = $ssl;
     }
 }
