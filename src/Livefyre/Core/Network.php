@@ -17,7 +17,8 @@ class Network {
 		$this->_name = $name;
 		$this->_key = $key;
 		$this->_ssl = true;
-		$this->_networkName = explode(".", $name)[0];
+		$n = explode(".", $name);
+		$this->_networkName = $n[0];
 	}
 
 	public function setUserSyncUrl($urlTemplate) {
