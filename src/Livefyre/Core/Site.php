@@ -52,7 +52,7 @@ class Site {
 		}
 
 		$checksum = array("tags" => $tags, "title" => $title, "url" => $url);
-		return md5(json_encode($checksum, JSON_UNESCAPED_SLASHES));
+		return md5(str_replace('\/','/',json_encode($checksum)););
 	}
 
 	public function createCollection($title, $articleId, $url, $options = array()) {
