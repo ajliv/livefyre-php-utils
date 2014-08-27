@@ -2,7 +2,7 @@
 namespace Livefyre;
 
 class LfTest {
-    public $NETWORK_NAME = "<NETWORK-NAME>";
+    public $NETWORK_NAME = "<NETWORK.NAME>";
     public $NETWORK_KEY = "<NETWORK-KEY>";
     public $SITE_ID = "<SITE-ID>";
     public $SITE_KEY = "<SITE-KEY>";
