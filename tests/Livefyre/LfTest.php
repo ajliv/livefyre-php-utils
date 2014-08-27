@@ -11,7 +11,7 @@ class LfTest {
     public $ARTICLE_ID = "<ARTICLE-ID>";
 
     public function setPropValues($env) {
-        try {
+        if (file_exists("test.ini")) {
             $values = parse_ini_file("test.ini", true);
             $this->NETWORK_NAME = $values[$env]["NETWORK_NAME"];
             $this->NETWORK_KEY = $values[$env]["NETWORK_KEY"];
@@ -20,8 +20,6 @@ class LfTest {
             $this->COLLECTION_ID = $values[$env]["COLLECTION_ID"];
             $this->USER_ID = $values[$env]["USER_ID"];
             $this->ARTICLE_ID = $values[$env]["ARTICLE_ID"];
-        } catch (Exception $e) {
-            // don't do anything as defaults are already present.
         }
     }
 }
