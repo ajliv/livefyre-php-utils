@@ -4,3 +4,6 @@ vendor
 data
 .project*
 test.ini
+.idea
+
+*.iml
