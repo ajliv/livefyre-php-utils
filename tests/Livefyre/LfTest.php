@@ -9,6 +9,8 @@ class LfTest {
     public $COLLECTION_ID = "<COLLECTION-ID>";
     public $USER_ID = "<USER-ID>";
     public $ARTICLE_ID = "<ARTICLE-ID>";
+    public $TITLE = "PHPTest";
+    public $URL = "http://answers.livefyre.com/PHP";
 
     public function setPropValues($env) {
         if (file_exists("test.ini")) {

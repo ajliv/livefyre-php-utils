@@ -1,102 +1,123 @@
 <?php
+
 namespace Livefyre\Core;
 
+
+use Livefyre\Model\CollectionData;
+use Livefyre\Exceptions\ApiException;
 use Livefyre\Utils\JWT;
-use Livefyre\Utils\IDNA;
 use Livefyre\Routing\Client;
 use Livefyre\Api\Domain;
+use Livefyre\Utils\LivefyreUtils;
+use Livefyre\Validator\CollectionValidator;
 
-class Collection {
+class Collection extends Core {
     private $_site;
     private $_data;
-    private $_IDNA;
 
-    private static $TYPE = array(
-        "reviews", "sidenotes", "ratings", "counting", "liveblog", "livechat", "livecomments");
-
-    public function __construct($network, $id, $key) {
-        $this->_network = $network;
-        $this->_id = $id;
-        $this->_key = $key;
-        $this->_IDNA = new IDNA(array('idn_version' => 2008));
+    public function __construct(Site $site, CollectionData $data) {
+        $this->_site = $site;
+        $this->_data = $data;
     }
 
-    public function buildCollectionMetaToken($title, $articleId, $url, $options = array()) {
-        if (filter_var($this->_IDNA->encode($url), FILTER_VALIDATE_URL) === false) {
-            throw new \InvalidArgumentException("provided url is not a valid url");
-        }
-        if (strlen($title) > 255) {
-            throw new \InvalidArgumentException("title length should be under 255 char");
-        }
-
-        $collectionMeta = array(
-            "url" => $url,
-            "title" => $title,
-            "articleId" => $articleId
-        );
-
-        if (array_key_exists("type", $options) AND !in_array($options["type"], self::$TYPE)) {
-            throw new \InvalidArgumentException("type is not a recognized type. must be in " . implode(",", self::$TYPE));
-        }
-
-        return JWT::encode(array_merge($collectionMeta, $options), $this->_key);
+    public static function init(Site $site, $type, $title, $articleId, $url) {
+        $data = new CollectionData($type, $title, $articleId, $url);
+        return new Collection($site, CollectionValidator::validate($data));
     }
 
-    public function buildChecksum($title, $url, $tags = "") {
-        if (filter_var($this->_IDNA->encode($url), FILTER_VALIDATE_URL) === false) {
-            throw new \InvalidArgumentException("provided url is not a valid url");
-        }
-        if (strlen($title) > 255) {
-            throw new \InvalidArgumentException("title length should be under 255 char");
-        }
+    public function createOrUpdate() {
+        $response = $this->invokeCollectionApi("create");
+        if ($response->status_code === 200) {
+            $this->getData()->setId(json_decode($response->body)->{"data"}->{"collectionId"});
+            return $this;
+        } elseif ($response->status_code === 409) {
+            $response = $this->invokeCollectionApi("update");
 
-        $checksum = array("tags" => $tags, "title" => $title, "url" => $url);
+            if ($response->status_code === 200) {
+                return $this;
+            }
+        }
+        throw new ApiException($response->status_code);
+    }
+
+    public function buildCollectionMetaToken() {
+        $collectionMeta = $this->getData()->asArray();
+
+        $issued = $this->isNetworkIssued();
+        $core = $issued ? $this->getSite()->getNetwork() : $this->getSite();
+
+        $collectionMeta["iss"] = $core->getUrn();
+        return JWT::encode($collectionMeta, $core->getData()->getKey());
+    }
+
+    public function buildChecksum() {
+        $checksum = ksort($this->getData()->asArray());
         return md5(str_replace('\/','/',json_encode($checksum)));
     }
 
-    public function createCollection($title, $articleId, $url, $options = array()) {
-        $token = $this->buildCollectionMetaToken($title, $articleId, $url, $options);
-        $checksum = $this->buildChecksum($title, $url, array_key_exists("tags", $options) ? $options["tags"] : "");
-        $uri = sprintf("%s/api/v3.0/site/%s/collection/create/", Domain::quill($this), $this->_id) . "?sync=1";
-        $data = json_encode(array("articleId" => $articleId, "collectionMeta" => $token, "checksum" => $checksum));
-        $headers = array("Content-Type" => "application/json", "Accepts" => "application/json");
+    public function getCollectionContent() {
+        $url = sprintf("%s/bs3/%s/%s/%s/init",
+            Domain::bootstrap($this),
+            $this->getSite()->getNetwork()->getData()->getName(),
+            $this->getSite()->getData()->getId(),
+            base64_encode($this->getData()->getArticleId()));
 
-        $response = Client::POST($uri, $headers, $data);
-        if ($response->status_code === 200) {
-            return json_decode($response->body)->{"data"}->{"collectionId"};
-        }
-        return NULL;
-    }
-
-    public function getCollectionContent($articleId) {
-        $url = sprintf("%s/bs3/%s/%s/%s/init", Domain::bootstrap($this), $this->_network->getName(), $this->_id, base64_encode($articleId));
         $response = Client::GET($url);
 
+        if ($response->status_code >= 400) {
+            throw new ApiException($response->status_code);
+        }
         return json_decode($response->body);
     }
 
-    public function getCollectionId($articleId) {
-        $content = $this->getCollectionContent($articleId);
-        return $content->{"collectionSettings"}->{"collectionId"};
+    private function invokeCollectionApi($method) {
+        $uri = sprintf("%s/api/v3.0/site/%s/collection/%s/", Domain::quill($this), $this->getSite()->getData()->getId(), $method);
+        $data = json_encode(array(
+                "articleId" => $this->getData()->getArticleId(),
+                "collectionMeta" => $this->buildCollectionMetaToken(),
+                "checksum" => $this->buildChecksum())
+        );
+        $headers = array(
+            "Content-Type" => "application/json",
+            "Accepts" => "application/json"
+        );
+
+        return Client::POST($uri . "?sync=1", $headers, $data, false);
     }
 
-    /* Getters */
+    public function isNetworkIssued() {
+        $topics = $this->getData()->getTopics();
+        if (!$topics || count($topics) === 0) {
+            return false;
+        }
+
+        $urn = $this->getSite()->getNetwork()->getUrn();
+        forEach($topics as $topic) {
+            $topicId = $topic->getId();
+            if (LivefyreUtils::startsWith($topicId, $urn) && !LivefyreUtils::startsWith(str_replace($urn, "", $topicId), ":site=")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function getUrn() {
-        return $this->_network->getUrn() . ":site=" . $this->_id;
+        return $this->_site->getUrn() . ":collection=" . $this->getData()->getId();
     }
-    public function getNetworkName() {
-        return $this->_network->getNetworkName();
+
+    public function getSite() {
+        return $this->_site;
     }
-    public function buildLivefyreToken() {
-        return $this->_network->buildLivefyreToken();
+
+    public function setSite($site) {
+        $this->_site = $site;
     }
-    public function getNetwork() {
-        return $this->_network;
+
+    public function getData() {
+        return $this->_data;
     }
-    public function getId() {
-        return $this->_id;
-    }
-    public function getKey() {
-        return $this->_key;
+
+    public function setData($data) {
+        $this->_data = $data;
     }
 }

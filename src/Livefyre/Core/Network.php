@@ -1,25 +1,31 @@
 <?php
+
 namespace Livefyre\Core;
 
+
+use Livefyre\Exceptions\ApiException;
+use Livefyre\Model\NetworkData;
 use Livefyre\Routing\Client;
 use Livefyre\Utils\JWT;
 use Livefyre\Api\Domain;
+use Livefyre\Validator\NetworkValidator;
 
-class Network {
+class Network extends Core {
 	const DEFAULT_USER = "system";
 	const DEFAULT_EXPIRES = 86400;
 
-	private $_name;
-	private $_key;
-	private $_networkName;
+	private $_data;
+    private $_ssl;
 
-	public function __construct($name, $key) {
-		$this->_name = $name;
-		$this->_key = $key;
+	public function __construct(NetworkData $data) {
+		$this->_data = $data;
 		$this->_ssl = true;
-		$n = explode(".", $name);
-		$this->_networkName = $n[0];
 	}
+
+    public static function init($name, $key) {
+        $data = new NetworkData($name, $key);
+        return new Network(NetworkValidator::validate($data));
+    }
 
 	public function setUserSyncUrl($urlTemplate) {
 		if (strpos($urlTemplate, "{id}") === false) {
@@ -28,18 +34,15 @@ class Network {
 
 		$url = sprintf("%s", Domain::quill($this));
 		$data = array("actor_token" => $this->buildLivefyreToken(), "pull_profile_url" => $urlTemplate);
-		$response = Client::POST($url, array(), $data);
-		
-		return $response->status_code == 204;
+		Client::POST($url, array(), $data);
 	}
 
 	public function syncUser($userId) {
 		$data = array("lftoken" => $this->buildLivefyreToken());
 		$url = sprintf("%s/api/v3_0/user/%s/refresh", Domain::quill($this), $userId);
 
-		$response = Client::POST($url, array(), $data);
-		
-		return $response->status_code == 200;
+		Client::POST($url, array(), $data);
+		return $this;
 	}
 
 	public function buildLivefyreToken() {
@@ -52,46 +55,51 @@ class Network {
 		}
 
 		$token = array(
-		    "domain" => $this->_name,
+		    "domain" => $this->getData()->getName(),
 		    "user_id" => $userId,
 		    "display_name" => $displayName,
 		    "expires" => time() + (int)$expires
 		);
 
-		return JWT::encode($token, $this->_key);
+		return JWT::encode($token, $this->getData()->getKey());
 	}
 
 	public function validateLivefyreToken($lfToken) {
-		$tokenAttributes = JWT::decode($lfToken, $this->_key);
+		$tokenAttributes = JWT::decode($lfToken, $this->getData()->getKey());
 
-		return $tokenAttributes->domain == $this->_name
+		return $tokenAttributes->domain == $this->getData()->getName()
 			&& $tokenAttributes->user_id == self::DEFAULT_USER
 			&& $tokenAttributes->expires >= time();
 	}
 
 	public function getSite($siteId, $siteKey) {
-		return new Site($this, $siteId, $siteKey);
+		return Site::init($this, $siteId, $siteKey);
 	}
 
-	/* Getters */
 	public function getUrn() {
-		return "urn:livefyre:" . $this->_name;
+		return "urn:livefyre:" . $this->getData()->getName();
 	}
-	public function getUserUrn($user) {
-        return $this->getUrn().":user=".$user;
+
+	public function getUrnForUser($user) {
+        return $this->getUrn() . ":user=" . $user;
     }
+
 	public function getNetworkName() {
-		return $this->_networkName;
+		return explode(".", $this->getData()->getName())[0];
 	}
-    public function getName() {
-    	return $this->_name;
+
+    public function getData() {
+    	return $this->_data;
     }
-    public function getKey() {
-    	return $this->_key;
+
+    public function setData($data) {
+    	return $this->_data = $data;
     }
+
     public function isSsl() {
     	return $this->_ssl;
     }
+
     public function setSsl($ssl) {
     	$this->_ssl = $ssl;
     }

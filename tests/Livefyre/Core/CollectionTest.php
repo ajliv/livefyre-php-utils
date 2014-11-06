@@ -1,10 +1,9 @@
 <?php
+
 namespace Livefyre;
 
-use Livefyre\Utils\JWT;
-use Livefyre\LfTest;
 
-class CoreTest extends \PHPUnit_Framework_TestCase {
+class CollectionTest extends \PHPUnit_Framework_TestCase {
     private $_config;
 
     protected function setUp() {
@@ -13,47 +12,15 @@ class CoreTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testApi() {
-        $this->markTestSkipped("can't make network calls to bad params.");
-
-        $network = Livefyre::getNetwork($this->_config->NETWORK_NAME, $this->_config->NETWORK_KEY);
-        $this->assertTrue($network->setUserSyncUrl("url/{id}"));
-        $this->assertTrue($network->syncUser("username"));
-
         $site = Livefyre::getNetwork($this->_config->NETWORK_NAME, $this->_config->NETWORK_KEY)->getSite($this->_config->SITE_ID, $this->_config->SITE_KEY);
 
         $name = "PHPCreateCollection" . time();
 
-        $id = $site->createCollection($name, $name, "http://answers.livefyre.com/PHP");
-        $otherId = $site->getCollectionId($name);
+        $collection = $site->buildLiveCommentsCollection($name, $name, "http://answers.livefyre.com/PHP");
+        $collection->createOrUpdate();
 
-        $this->assertEquals($id, $otherId);
-        var_dump($site->getCollectionContent($this->_config->ARTICLE_ID));
-    }
-
-	/**
-	 * @covers Livefyre::getNetwork->setUserSyncUrl()
-	 * @expectedException InvalidArgumentException
-	 */
-    public function testNetworkUserSyncUrl() {
-        $network = Livefyre::getNetwork($this->_config->NETWORK_NAME, $this->_config->NETWORK_KEY);
-        $network->setUserSyncUrl("www.test.com");
-    }
-
-    /**
-	 * @covers Livefyre::getNetwork->buildUserAuthToken()
-	 * @expectedException InvalidArgumentException
-	 */
-    public function testNetworkBuildUserAuthToken() {
-        $network = Livefyre::getNetwork("networkName", "networkKey");
-        $network->buildUserAuthToken("fawe-f-fawef.", "test", "test");
-    }
-
-    /**
-	 * @covers Livefyre::getNetwork->validateLivefyreToken()
-	 */
-    public function testNetworkValidateLivefyreToken() {
-        $network = Livefyre::getNetwork("networkName", "networkKey");
-        $network->validateLivefyreToken($network->buildLivefyreToken());
+        $id = $collection->getCollectionContent()->{"collectionSettings"}->{"collectionId"};
+        $this->assertEquals($id, $collection->getData()->getId());
     }
 
 	/**
@@ -90,7 +57,7 @@ class CoreTest extends \PHPUnit_Framework_TestCase {
 
     public function testSiteBuildCollectionMetaToken_goodScenarios() {
         $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-        
+
         $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", array("tags"=>"tags", "type"=>"reviews"));
         $decoded = JWT::decode($token, "siteSecret");
 

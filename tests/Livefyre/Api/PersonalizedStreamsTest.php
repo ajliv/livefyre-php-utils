@@ -1,11 +1,8 @@
 <?php
 namespace Livefyre;
 
-use Livefyre\Livefyre;
 use Livefyre\Api\PersonalizedStream;
 use Livefyre\Factory\CursorFactory;
-
-use Livefyre\LfTest;
 
 class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
     private $_network;
@@ -13,8 +10,6 @@ class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
     private $_config;
 
     protected function setUp() {
-        $this->markTestSkipped("can't make network calls to bad params.");
-
         $this->_config = new LfTest();
         $this->_config->setPropValues("prod");
         $this->_network = Livefyre::getNetwork($this->_config->NETWORK_NAME, $this->_config->NETWORK_KEY);
@@ -63,18 +58,21 @@ class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
     
     public function testCollectionTopicApi() {
         $site = $this->_site;
+        $name = "PHP PSSTREAM TEST " . time();
+        $collection = $this->_site->buildLiveCommentsCollection($name, $name, $this->_config->URL);
+        $collection->createOrUpdate();
 
-        PersonalizedStream::getCollectionTopics($site, $this->_config->COLLECTION_ID);
+        PersonalizedStream::getCollectionTopics($collection);
 
         $topic2 = PersonalizedStream::createOrUpdateTopic($site, "2", "DUL");
 
-        PersonalizedStream::addCollectionTopics($site, $this->_config->COLLECTION_ID, array($topic2));
+        PersonalizedStream::addCollectionTopics($collection, array($topic2));
 
         $topic1 = PersonalizedStream::createOrUpdateTopic($site, "1", "HANA");
 
-        PersonalizedStream::replaceCollectionTopics($site, $this->_config->COLLECTION_ID, array($topic1));
+        PersonalizedStream::replaceCollectionTopics($collection, array($topic1));
 
-        PersonalizedStream::removeCollectionTopics($site, $this->_config->COLLECTION_ID, array($topic1, $topic2));
+        PersonalizedStream::removeCollectionTopics($collection, array($topic1, $topic2));
 
         PersonalizedStream::deleteTopics($site, array($topic1, $topic2));
     }

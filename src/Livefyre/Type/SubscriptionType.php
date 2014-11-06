@@ -1,5 +1,7 @@
 <?php
-namespace Livefyre\Entity;
+
+namespace Livefyre\Type;
+
 
 use Livefyre\Utils\BasicEnum;
 

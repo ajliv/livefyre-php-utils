@@ -1,21 +1,75 @@
 <?php
+
 namespace Livefyre\Core;
 
-use Livefyre\Utils\JWT;
-use Livefyre\Utils\IDNA;
-use Livefyre\Routing\Client;
-use Livefyre\Api\Domain;
 
-class Site {
+use Livefyre\Model\SiteData;
+use Livefyre\Type\CollectionType;
+use Livefyre\Validator\SiteValidator;
+
+class Site extends Core {
 	private $_network;
     private $_data;
 
-	private static $TYPE = array(
-		"reviews", "sidenotes", "ratings", "counting", "liveblog", "livechat", "livecomments");
-
-	public function __construct($network, $id, $key) {
+	public function __construct(Network $network, SiteData $data) {
 		$this->_network = $network;
-		$this->_id = $id;
-		$this->_key = $key;
+		$this->_data = $data;
 	}
+
+    public static function init(Network $network, $name, $key) {
+        $data = new SiteData($name, $key);
+        return new Site($network, SiteValidator::validate($data));
+    }
+
+    public function buildLiveCommentsCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::LIVECOMMENTS, $title, $articleId, $url);
+    }
+
+    public function buildLiveBlogCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::LIVEBLOG, $title, $articleId, $url);
+    }
+
+    public function buildLiveChatCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::LIVECHAT, $title, $articleId, $url);
+    }
+
+    public function buildCountingCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::COUNTING, $title, $articleId, $url);
+    }
+
+    public function buildRatingsCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::RATINGS, $title, $articleId, $url);
+    }
+
+    public function buildReviewsCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::REVIEWS, $title, $articleId, $url);
+    }
+
+    public function buildSidenotesCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::SIDENOTES, $title, $articleId, $url);
+    }
+
+    public function buildCollection($type, $title, $articleId, $url) {
+        return Collection::init($this, $type, $title, $articleId, $url);
+    }
+
+    public function getUrn() {
+        return $this->_network->getUrn() . ":site=" . $this->getData()->getId();
+    }
+
+    public function getNetwork() {
+        return $this->_network;
+    }
+
+    public function setNetwork($network) {
+        $this->_network = $network;
+    }
+
+    public function getData() {
+        return $this->_data;
+    }
+
+    public function setData($data) {
+        $this->_data = $data;
+    }
 }

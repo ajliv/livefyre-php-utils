@@ -1,5 +1,7 @@
 <?php
+
 namespace Livefyre\Utils;
+
 
 abstract class BasicEnum {
     private static $constCache = null;

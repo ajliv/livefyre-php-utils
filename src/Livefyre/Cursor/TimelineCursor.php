@@ -1,72 +1,67 @@
 <?php
-namespace Livefyre\Entity;
+
+namespace Livefyre\Cursor;
+
 
 use Livefyre\Api\PersonalizedStream;
+use Livefyre\Core\Core;
+use Livefyre\Model\CursorData;
+use Livefyre\Validator\CursorValidator;
 
 class TimelineCursor {
-
-	const DATE_FORMAT = "Y-m-d\TH:i:s.z\Z";
+	const DATE_FORMAT = "Y-m-d\\TH:i:s.z\\Z";
 
 	private $_core;
-	private $_resource;
-	private $_cursorTime;
-	private $_next = FALSE;
-	private $_previous = FALSE;
-	private $_limit;
+	private $_data;
 
-	public function __construct($core, $resource, $limit, $startTime) {
+	public function __construct(Core $core, CursorData $data) {
 		$this->_core = $core;
-		$this->_resource = $resource;
-		$this->_limit = $limit;
-		$this->_cursorTime = gmdate(self::DATE_FORMAT, $startTime);
+		$this->_data = $data;
 	}
 
-	public function next($limit = null) {
-		$limit = (is_null($limit)) ? $this->_limit : $limit;
-
-		$data = PersonalizedStream::getTimelineStream($this->_core, $this->_resource, $limit, null, $this->_cursorTime);
-		$cursor = $data->{"meta"}->{"cursor"};
-		
-		$this->_next = $cursor->{"hasNext"};
-		$this->_previous = $cursor->{"next"} !== null;
-		$this->_cursorTime = $cursor->{"next"};
-
-		return $data;
+	public static function init($core, $resource, $limit, $startTime) {
+		$data = new CursorData($resource, $limit, $startTime);
+		return new TimelineCursor($core, CursorValidator::validate($data));
 	}
 
-	public function previous($limit = null) {
-		$limit = (is_null($limit)) ? $this->_limit : $limit;
+	public function next() {
+		$resp = PersonalizedStream::getTimelineStream($this->getCore(), true);
+		$cursor = $resp->{"meta"}->{"cursor"};
 
-		$data = PersonalizedStream::getTimelineStream($this->_core, $this->_resource, $limit, $this->_cursorTime, null);
-		$cursor = $data->{"meta"}->{"cursor"};
-		
-		$this->_previous = $cursor->{"hasPrev"};
-		$this->_next = $cursor->{"prev"} !== null;
-		$this->_cursorTime = $cursor->{"prev"};
+		$data = $this->getData();
+		$data->setNext($cursor->{"hasNext"});
+		$data->setPrevious($cursor->{"next"} !== null);
+		if ($data->isPrevious()) {
+			$data->setCursorTime($cursor->{"next"});
+		}
 
-		return $data;
+		return $resp;
 	}
 
-	public function getResource() {
-		return $this->_resource;
+	public function previous() {
+		$resp = PersonalizedStream::getTimelineStream($this->getCore(), false);
+		$cursor = $resp->{"meta"}->{"cursor"};
+
+		$data = $this->getData();
+		$data->setPrevious($cursor->{"hasPrev"});
+		$data->setNext($cursor->{"prev"} !== null);
+		if ($data->isNext()) {
+			$data->setCursorTime($cursor->{"prev"});
+		}
+
+		return $resp;
 	}
-	// returns whichever format is stored - can be either UUID or time.
-	public function getCursorTime() {
-		return $this->_cursorTime;
+
+	public function getCore() {
+		return $this->_core;
 	}
-	public function setCursorTime($newTime) {
-		$this->_cursorTime = gmdate(self::DATE_FORMAT, $newTime);
+	public function setCore($core) {
+		$this->_core = $core;
 	}
-	public function hasPrevious() {
-		return $this->_previous;
+	public function getData() {
+		return $this->_data;
 	}
-	public function hasNext() {
-		return $this->_next;
-	}
-	public function getLimit() {
-		return $this->_limit;
-	}
-	public function setLimit($limit) {
-		$this->_limit = $limit;
+	public function setData(CursorData $data) {
+		$this->_data = $data;
 	}
 }
