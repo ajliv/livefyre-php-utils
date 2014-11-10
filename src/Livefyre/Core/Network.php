@@ -4,6 +4,7 @@ namespace Livefyre\Core;
 
 
 use Livefyre\Exceptions\ApiException;
+use Livefyre\Exceptions\LivefyreException;
 use Livefyre\Model\NetworkData;
 use Livefyre\Routing\Client;
 use Livefyre\Utils\JWT;
@@ -85,7 +86,11 @@ class Network extends Core {
     }
 
 	public function getNetworkName() {
-		return explode(".", $this->getData()->getName())[0];
+		$nameArray = explode(".", $this->getData()->getName());
+		if (sizeof($nameArray > 1)) {
+			return $nameArray[0];
+		}
+		throw new LivefyreException("The network name is not in the correct format: " . $this->getData()->getName());
 	}
 
     public function getData() {
