@@ -24,7 +24,15 @@ class CollectionData {
     }
 
     public function asArray() {
-        return array_filter(get_object_vars($this));
+        $array = array_filter(get_object_vars($this));
+        if ($array["topics"]) {
+            $topics = array();
+            foreach($array["topics"] as $topic) {
+                $topics[] = $topic->serializeToJson();
+            }
+            $array["topics"] = $topics;
+        }
+        return $array;
     }
 
     public function getArticleId() {

@@ -51,7 +51,8 @@ class Collection extends Core {
     }
 
     public function buildChecksum() {
-        $checksum = ksort($this->getData()->asArray());
+        $checksum = $this->getData()->asArray();
+        ksort($checksum);
         return md5(str_replace('\/','/',json_encode($checksum)));
     }
 

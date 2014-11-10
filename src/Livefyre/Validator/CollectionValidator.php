@@ -5,12 +5,10 @@ namespace Livefyre\Validator;
 
 use Livefyre\Model\CollectionData;
 use Livefyre\Type\CollectionType;
-use Livefyre\Utils\IDNA;
+use Livefyre\Utils\LivefyreUtils;
 
 class CollectionValidator {
     public static function validate(CollectionData $data) {
-        $IDNA = new IDNA(array('idn_version' => 2008));
-
         $reason = "";
 
         $articleId = $data->getArticleId();
@@ -28,7 +26,7 @@ class CollectionValidator {
         $url = $data->getUrl();
         if (empty($url)) {
             $reason .= "\n URL is null or blank.";
-        } elseif (filter_var($IDNA->encode($data->getUrl()), FILTER_VALIDATE_URL) === false) {
+        } elseif (LivefyreUtils::isValidUrl($data->getUrl())) {
             $reason .= "\n URL is not a valid url. see http://www.ietf.org/rfc/rfc2396.txt.";
         }
 
@@ -39,7 +37,7 @@ class CollectionValidator {
             $reason .= "\n Type is not of a valid type.";
         }
 
-        if (count($reason) > 0) {
+        if (strlen($reason) > 0) {
             throw new \InvalidArgumentException("Problems with your collection input:" . $reason);
         }
 

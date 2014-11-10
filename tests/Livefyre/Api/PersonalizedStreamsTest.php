@@ -5,19 +5,19 @@ use Livefyre\Api\PersonalizedStream;
 use Livefyre\Factory\CursorFactory;
 
 class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
-    private $_network;
-    private $_site;
-    private $_config;
+    private $network;
+    private $site;
+    private $config;
 
     protected function setUp() {
-        $this->_config = new LfTest();
-        $this->_config->setPropValues("prod");
-        $this->_network = Livefyre::getNetwork($this->_config->NETWORK_NAME, $this->_config->NETWORK_KEY);
-        $this->_site = $this->_network->getSite($this->_config->SITE_ID, $this->_config->SITE_KEY);
+        $this->config = new LfTest();
+        $this->config->setPropValues("prod");
+        $this->network = Livefyre::getNetwork($this->config->NETWORK_NAME, $this->config->NETWORK_KEY);
+        $this->site = $this->network->getSite($this->config->SITE_ID, $this->config->SITE_KEY);
     }
-    
+
     public function testNetworkTopicApi() {
-        $network = $this->_network;
+        $network = $this->network;
         $topic = PersonalizedStream::createOrUpdateTopic($network, "1", "UNO");
         $this->assertFalse($topic === null);
 
@@ -37,7 +37,7 @@ class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testSiteTopicApi() {
-        $site = $this->_site;
+        $site = $this->site;
         $topic = PersonalizedStream::createOrUpdateTopic($site, "2", "DUL");
         $this->assertFalse($topic === null);
 
@@ -55,11 +55,11 @@ class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
 
         PersonalizedStream::deleteTopics($site, $topics);
     }
-    
+
     public function testCollectionTopicApi() {
-        $site = $this->_site;
+        $site = $this->site;
         $name = "PHP PSSTREAM TEST " . time();
-        $collection = $this->_site->buildLiveCommentsCollection($name, $name, $this->_config->URL);
+        $collection = $this->site->buildLiveCommentsCollection($name, $name, $this->config->URL);
         $collection->createOrUpdate();
 
         PersonalizedStream::getCollectionTopics($collection);
@@ -72,19 +72,24 @@ class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
 
         PersonalizedStream::replaceCollectionTopics($collection, array($topic1));
 
+        $name = "PHP PSSTREAM TEST " . time();
+        $collection2 = $this->site->buildLiveCommentsCollection($name, name, $this->config->URL);
+        $collection2->getData()->setTopics(array($topic1, $topic2));
+        $collection2->createOrUpdate();
+
         PersonalizedStream::removeCollectionTopics($collection, array($topic1, $topic2));
 
         PersonalizedStream::deleteTopics($site, array($topic1, $topic2));
     }
 
     public function testSubscriptions() {
-        $network = $this->_network;
-        $userToken = $network->buildUserAuthToken($this->_config->USER_ID, $this->_config->USER_ID . "@" . $this->_config->NETWORK_NAME, $network::DEFAULT_EXPIRES);
+        $network = $this->network;
+        $userToken = $network->buildUserAuthToken($this->config->USER_ID, $this->config->USER_ID . "@" . $this->config->NETWORK_NAME, $network::DEFAULT_EXPIRES);
 
         $topic1 = PersonalizedStream::createOrUpdateTopic($network, "1", "HANA");
         $topic2 = PersonalizedStream::createOrUpdateTopic($network, "2", "DUL");
 
-        PersonalizedStream::getSubscriptions($network, $this->_config->USER_ID);
+        PersonalizedStream::getSubscriptions($network, $this->config->USER_ID);
 
         PersonalizedStream::addSubscriptions($network, $userToken, array($topic1, $topic2));
 
@@ -98,9 +103,9 @@ class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testTimelineStream() {
-        $network = $this->_network;
+        $network = $this->network;
 
-        $cursor = CursorFactory::getPersonalStreamCursor($network, $this->_config->USER_ID);
+        $cursor = CursorFactory::getPersonalStreamCursor($network, $this->config->USER_ID);
 
         $data = $cursor->next();
         $data = $cursor->previous();

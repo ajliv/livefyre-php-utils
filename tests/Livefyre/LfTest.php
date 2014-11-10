@@ -22,6 +22,14 @@ class LfTest {
             $this->COLLECTION_ID = $values[$env]["COLLECTION_ID"];
             $this->USER_ID = $values[$env]["USER_ID"];
             $this->ARTICLE_ID = $values[$env]["ARTICLE_ID"];
+        } elseif (getenv("NETWORK_NAME") !== NULL) {
+            $this->NETWORK_NAME = getenv("NETWORK_NAME");
+            $this->NETWORK_KEY = getenv("NETWORK_KEY");
+            $this->SITE_ID = getenv("SITE_ID");
+            $this->SITE_KEY =getenv("SITE_KEY");
+            $this->COLLECTION_ID = getenv("COLLECTION_ID");
+            $this->USER_ID = getenv("USER_ID");
+            $this->ARTICLE_ID = getenv("ARTICLE_ID");
         }
     }
 }

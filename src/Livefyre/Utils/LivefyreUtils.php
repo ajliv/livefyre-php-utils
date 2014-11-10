@@ -31,4 +31,10 @@ class LivefyreUtils {
 
         return (substr($haystack, -$length) === $needle);
     }
+
+    public static function isValidUrl($url) {
+        $IDNA = new IDNA(array('idn_version' => 2008));
+
+        return filter_var($IDNA->encode($url), FILTER_VALIDATE_URL) === false;
+    }
 }

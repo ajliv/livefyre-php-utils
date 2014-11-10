@@ -22,7 +22,7 @@ class NetworkValidator {
             $reason .= "\n Key is null or blank.";
         }
 
-        if (count($reason) > 0) {
+        if (strlen($reason) > 0) {
             throw new \InvalidArgumentException("Problems with your network input:" . $reason);
         }
 

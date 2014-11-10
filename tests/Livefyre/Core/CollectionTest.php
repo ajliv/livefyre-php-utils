@@ -3,20 +3,23 @@
 namespace Livefyre;
 
 
+use Livefyre\Dto\Topic;
+use Livefyre\Utils\JWT;
+
 class CollectionTest extends \PHPUnit_Framework_TestCase {
-    private $_config;
+    private $config;
+    private $site;
 
     protected function setUp() {
-        $this->_config = new LfTest();
-        $this->_config->setPropValues("prod");
+        $this->config = new LfTest();
+        $this->config->setPropValues("prod");
+        $this->site = Livefyre::getNetwork($this->config->NETWORK_NAME, $this->config->NETWORK_KEY)->getSite($this->config->SITE_ID, $this->config->SITE_KEY);
     }
 
     public function testApi() {
-        $site = Livefyre::getNetwork($this->_config->NETWORK_NAME, $this->_config->NETWORK_KEY)->getSite($this->_config->SITE_ID, $this->_config->SITE_KEY);
-
         $name = "PHPCreateCollection" . time();
 
-        $collection = $site->buildLiveCommentsCollection($name, $name, "http://answers.livefyre.com/PHP");
+        $collection = $this->site->buildLiveCommentsCollection($name, $name, "http://answers.livefyre.com/PHP");
         $collection->createOrUpdate();
 
         $id = $collection->getCollectionContent()->{"collectionSettings"}->{"collectionId"};
@@ -24,85 +27,59 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
 	/**
-	 * @covers Livefyre::getNetwork->getSite->buildCollectionMetaToken()
+	 * @covers Livefyre::getNetwork->getSite->buildLiveCommentsCollection->buildCollectionMetaToken()
 	 * @expectedException InvalidArgumentException
 	 */
-    public function testSiteBuildCollectionMetaToken_badUrl() {
-    	$site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-    	$site->buildCollectionMetaToken("title", "articleId", "url");
+    public function testBuildCollection_badUrl() {
+    	$this->site->buildLiveCommentsCollection("title", "articleId", "url");
     }
 
 	/**
-	 * @covers Livefyre::getNetwork->getSite->buildCollectionMetaToken()
+	 * @covers Livefyre::getNetwork->getSite->buildLiveCommentsCollection->buildCollectionMetaToken()
 	 * @expectedException InvalidArgumentException
 	 */
-    public function testSiteBuildCollectionMetaToken_badTitle() {
-    	$site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-    	$site->buildCollectionMetaToken("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com");
+    public function testBuildCollection_badTitle() {
+        $this->site->buildLiveCommentsCollection("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com");
     }
 
     /**
      * @covers Livefyre::getNetwork->getSite->buildCollectionMetaToken()
      * @expectedException InvalidArgumentException
      */
-    public function testSiteBuildCollectionMetaToken_badType() {
-        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-        $site->buildCollectionMetaToken("title", "articleId", "http://livefyre.com", array("type"=>"badType"));
+    public function testBuildCollection_badType() {
+        $this->site->buildCollection("bad type", "title", "articleId", "http://livefyre.com");
     }
 
-    public function testSiteBuildCollectionMetaToken() {
-        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-        $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com");
+    public function testBuildCollectionMetaToken() {
+        $collection = $this->site->buildLiveCommentsCollection("title", "articleId", "https://www.url.com");
+        $this->assertNotNull($collection->buildCollectionMetaToken());
+
+        $collection->getData()->setTags("tags");
+
+        $token = $collection->buildCollectionMetaToken();
+        $decoded = JWT::decode($token, $this->config->SITE_KEY);
+
+        $this->assertEquals("tags", $decoded->{"tags"});
     }
 
-    public function testSiteBuildCollectionMetaToken_goodScenarios() {
-        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
+    public function testBuildChecksum() {
+        $collection = $this->site->buildLiveCommentsCollection("title", "articleId", "http://livefyre.com");
+        $collection->getData()->setTags("tags");
 
-        $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", array("tags"=>"tags", "type"=>"reviews"));
-        $decoded = JWT::decode($token, "siteSecret");
+        $checksum = $collection->buildChecksum();
 
-        $this->assertEquals("reviews", $decoded->{"type"});
-
-        $token = $site->buildCollectionMetaToken("title", "articleId", "https://www.url.com", array("type"=>"liveblog"));
-        $decoded = JWT::decode($token, "siteSecret");
-
-        $this->assertEquals("liveblog", $decoded->{"type"});
+        $this->assertEquals("8bcfca7fb2187b1dcb627506deceee32", $checksum);
     }
 
-    /**
-     * @covers Livefyre::getNetwork->getSite->buildChecksum()
-     * @expectedException InvalidArgumentException
-     */
-    public function testSiteBuildChecksum_badUrl() {
-        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-        $site->buildChecksum("title", "url", "tags");
-    }
+    public function testNetworkIssued() {
+        $collection = $this->site->buildLiveCommentsCollection("title", "articleId", "http://livefyre.com");
+        $this->assertFalse($collection->isNetworkIssued());
 
-    /**
-     * @covers Livefyre::getNetwork->getSite->buildChecksum()
-     * @expectedException InvalidArgumentException
-     */
-    public function testSiteBuildChecksum_badTitle() {
-        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-        $site->buildChecksum("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "http://www.url.com", "tags");
-    }
+        $collection->getData()->setTopics(array(Topic::create($this->site, "ID", "LABEL")));
+        $this->assertFalse($collection->isNetworkIssued());
 
-    public function testSiteBuildChecksum() {
-        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-        $checksum = $site->buildChecksum("title", "https://www.url.com", "tags");
+        $collection->getData()->setTopics(array(Topic::create($this->site->getNetwork(), "ID", "LABEL")));
+        $this->assertTrue($collection->isNetworkIssued());
 
-        $this->assertEquals("4464458a10c305693b5bf4d43a384be7", $checksum);
-    }
-
-    public function testSiteValidUrls() {
-        $site = Livefyre::getNetwork("networkName", "networkKey")->getSite("siteId", "siteSecret");
-
-        $site->buildChecksum("", "http://test.com:8000", "");
-        $site->buildChecksum("", "http://test.com", "");
-        $site->buildChecksum("", "https://test.com/", "");
-        $site->buildChecksum("", "ftp://test.com/", "");
-        $site->buildChecksum("", "http://清华大学.cn", "");
-        $site->buildChecksum("", "http://www.mysite.com/myresumé.html", "");
-        $site->buildChecksum("", "https://test.com/path/test.-_~!$&'()*+,=:@/dash", "");
     }
 }

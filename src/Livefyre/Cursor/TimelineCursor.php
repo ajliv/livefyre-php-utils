@@ -25,7 +25,7 @@ class TimelineCursor {
 	}
 
 	public function next() {
-		$resp = PersonalizedStream::getTimelineStream($this->getCore(), true);
+		$resp = PersonalizedStream::getTimelineStream($this, true);
 		$cursor = $resp->{"meta"}->{"cursor"};
 
 		$data = $this->getData();
@@ -39,7 +39,7 @@ class TimelineCursor {
 	}
 
 	public function previous() {
-		$resp = PersonalizedStream::getTimelineStream($this->getCore(), false);
+		$resp = PersonalizedStream::getTimelineStream($this, false);
 		$cursor = $resp->{"meta"}->{"cursor"};
 
 		$data = $this->getData();

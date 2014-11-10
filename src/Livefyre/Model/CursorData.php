@@ -15,7 +15,7 @@ class CursorData {
     public function __construct($resource, $limit, $startTime) {
         $this->resource = $resource;
         $this->cursorTime = gmdate(self::DATE_FORMAT, $startTime);
-        $this->$limit = $limit;
+        $this->limit = $limit;
     }
 
     public function getResource() {
