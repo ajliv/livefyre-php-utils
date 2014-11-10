@@ -289,7 +289,8 @@ class PersonalizedStream {
 	private static function buildSubscriptions($topics, $userUrn) {
 		$subscriptions = array();
 		foreach($topics as &$topic) {
-			$subscriptions[] = (new Subscription($topic->getId(), $userUrn, SubscriptionType::personalStream))->serializeToJson();
+			$sub = new Subscription($topic->getId(), $userUrn, SubscriptionType::personalStream);
+			$subscriptions[] = $sub->serializeToJson();
 		}
 		return $subscriptions;
 	}
