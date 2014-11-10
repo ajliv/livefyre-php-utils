@@ -39,7 +39,11 @@ class PersonalizedStream {
 	}
 
 	public static function createOrUpdateTopic(Core $core, $id, $label) {
-		return self::createOrUpdateTopics($core, array($id => $label))[0];
+		$topics = self::createOrUpdateTopics($core, array($id => $label));
+		if (count($topics) > 0) {
+			return $topics[0];
+		}
+		return NULL;
 	}
 
 	public static function deleteTopic(Core $core, $topic) {

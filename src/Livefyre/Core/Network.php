@@ -87,7 +87,7 @@ class Network extends Core {
 
 	public function getNetworkName() {
 		$nameArray = explode(".", $this->getData()->getName());
-		if (sizeof($nameArray > 1)) {
+		if (count($nameArray > 1)) {
 			return $nameArray[0];
 		}
 		throw new LivefyreException("The network name is not in the correct format: " . $this->getData()->getName());
