@@ -20,7 +20,7 @@
         "phpunit/phpunit": "4.3.*",
         "phpdocumentor/phpdocumentor": "2.*",
         "satooshi/php-coveralls": "dev-master",
-        "phpunit/php-code-coverage": "3.0.*@dev"
+        "phpunit/php-code-coverage": "2.0.x-dev"
     },
     "autoload": {
         "psr-0": {
