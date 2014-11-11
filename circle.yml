@@ -1,9 +1,7 @@
 ## Customize dependencies
 dependencies:
-  override:
-    - mkdir -p build/logs
-    - composer install --dev --no-interaction
-    - pecl install xdebug
+  pre:
+    - sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
 
 ## Customize test commands
 test:
