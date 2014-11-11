@@ -25,7 +25,7 @@ class CollectionData {
 
     public function asArray() {
         $array = array_filter(get_object_vars($this));
-        if ($array["topics"]) {
+        if (array_key_exists("topics", $array)) {
             $topics = array();
             foreach($array["topics"] as $topic) {
                 $topics[] = $topic->serializeToJson();
