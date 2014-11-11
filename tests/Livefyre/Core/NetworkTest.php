@@ -18,7 +18,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Network::setUserSyncUrl
+     * @covers Livefyre\Core\Network::setUserSyncUrl
      * @expectedException InvalidArgumentException
      */
     public function testNetworkUserSyncUrl() {
@@ -27,7 +27,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Network::buildUserAuthToken
+     * @covers Livefyre\Core\Network::buildUserAuthToken
      * @expectedException InvalidArgumentException
      */
     public function testNetworkBuildUserAuthToken() {
@@ -36,7 +36,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Network::validateLivefyreToken
+     * @covers Livefyre\Core\Network::validateLivefyreToken
      */
     public function testNetworkValidateLivefyreToken() {
         $network = Livefyre::getNetwork($this->config->NETWORK_NAME, $this->config->NETWORK_KEY);
