@@ -8,3 +8,7 @@ test:
   override:
     - phpunit -c phpunit.xml
     - php vendor/bin/coveralls
+
+machine:
+  php:
+    version: 5.3.10-1ubuntu3.7
