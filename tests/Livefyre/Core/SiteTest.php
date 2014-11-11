@@ -46,7 +46,7 @@ class SiteTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Livefyre::getNetwork->getSite()
+     * @covers Network::getSite()
      * @expectedException InvalidArgumentException
      */
     public function testInit_badID() {
@@ -54,7 +54,7 @@ class SiteTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Livefyre::getNetwork->getSite()
+     * @covers Network::getSite()
      * @expectedException InvalidArgumentException
      */
     public function testInit_badKey() {

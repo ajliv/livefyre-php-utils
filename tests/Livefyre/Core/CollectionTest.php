@@ -27,7 +27,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
 	/**
-	 * @covers Livefyre::getNetwork->getSite->buildLiveCommentsCollection->buildCollectionMetaToken()
+	 * @covers Collection::buildCollectionMetaToken
 	 * @expectedException InvalidArgumentException
 	 */
     public function testBuildCollection_badUrl() {
@@ -35,7 +35,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
 	/**
-	 * @covers Livefyre::getNetwork->getSite->buildLiveCommentsCollection->buildCollectionMetaToken()
+	 * @covers Collection::buildCollectionMetaToken
 	 * @expectedException InvalidArgumentException
 	 */
     public function testBuildCollection_badTitle() {
@@ -43,7 +43,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Livefyre::getNetwork->getSite->buildCollectionMetaToken()
+     * @covers Collection::buildCollectionMetaToken
      * @expectedException InvalidArgumentException
      */
     public function testBuildCollection_badType() {
