@@ -5,7 +5,6 @@ namespace Livefyre;
 
 use Livefyre\Dto\Topic;
 use Livefyre\Utils\JWT;
-use Livefyre\Core\Collection;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase {
     private $config;
@@ -28,7 +27,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
 	/**
-	 * @covers Collection::buildCollectionMetaToken
+	 * @covers Livefyre\Core\Collection::buildCollectionMetaToken
 	 * @expectedException InvalidArgumentException
 	 */
     public function testBuildCollection_badUrl() {
@@ -36,7 +35,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
 	/**
-	 * @covers Collection::buildCollectionMetaToken
+	 * @covers Livefyre\Core\Collection::buildCollectionMetaToken
 	 * @expectedException InvalidArgumentException
 	 */
     public function testBuildCollection_badTitle() {
@@ -44,7 +43,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Collection::buildCollectionMetaToken
+     * @covers Livefyre\Core\Collection::buildCollectionMetaToken
      * @expectedException InvalidArgumentException
      */
     public function testBuildCollection_badType() {
