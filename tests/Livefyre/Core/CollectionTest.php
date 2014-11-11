@@ -5,6 +5,7 @@ namespace Livefyre;
 
 use Livefyre\Dto\Topic;
 use Livefyre\Utils\JWT;
+use Livefyre\Core\Collection;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase {
     private $config;
