@@ -6,6 +6,9 @@ namespace Livefyre\Routing;
 use Livefyre\Exceptions\ApiException;
 use Requests;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Client {
 	public static function GET($url, $headers = array()) {
 		if (function_exists("wp_remote_get")) {

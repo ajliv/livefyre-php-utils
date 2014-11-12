@@ -10,6 +10,8 @@
             <directory suffix=".php">./src/</directory>
             <exclude>
                 <directory suffix=".php">./src/Livefyre/Exceptions/</directory>
+                <directory suffix=".php">./src/Livefyre/Dto/</directory>
+                <directory suffix=".php">./src/Livefyre/Model/</directory>
                 <file>./src/Livefyre/Utils/IDNA.php</file>
                 <file>./src/Livefyre/Utils/JWT.php</file>
                 <file>./src/Livefyre/Utils/BasicEnum.php</file>
