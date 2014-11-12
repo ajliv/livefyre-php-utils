@@ -2,7 +2,9 @@
 
 namespace Livefyre\Utils;
 
-
+/**
+ * @codeCoverageIgnore
+ */
 abstract class BasicEnum {
     private static $constCache = null;
 

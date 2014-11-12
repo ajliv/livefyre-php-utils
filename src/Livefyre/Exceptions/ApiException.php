@@ -2,7 +2,9 @@
 
 namespace Livefyre\Exceptions;
 
-
+/**
+ * @codeCoverageIgnore
+ */
 class ApiException extends LivefyreException {
 
     private $apiStatus = array(

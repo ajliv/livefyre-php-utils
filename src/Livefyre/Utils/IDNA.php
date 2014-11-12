@@ -51,6 +51,7 @@ namespace Livefyre\Utils;
  * @author  Matthias Sommerfeld <mso@phlylabs.de>
  * @copyright 2004-2011 phlyLabs Berlin, http://phlylabs.de
  * @version 0.8.1 2011-12-19
+ * @codeCoverageIgnore
  */
 class IDNA
 {
