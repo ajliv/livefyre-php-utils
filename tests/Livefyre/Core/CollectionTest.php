@@ -26,24 +26,31 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($id, $collection->getData()->getId());
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testBuildCollection_badParam() {
+        $this->site->buildLiveCommentsCollection(NULL, NULL, NULL);
+    }
+
 	/**
-	 * @covers Livefyre\Core\Collection::buildCollectionMetaToken
-	 * @expectedException InvalidArgumentException
+     * @covers Livefyre\Validator\CollectionValidator::validate
+     * @expectedException InvalidArgumentException
 	 */
     public function testBuildCollection_badUrl() {
     	$this->site->buildLiveCommentsCollection("title", "articleId", "url");
     }
 
 	/**
-	 * @covers Livefyre\Core\Collection::buildCollectionMetaToken
-	 * @expectedException InvalidArgumentException
+     * @covers Livefyre\Validator\CollectionValidator::validate
+     * @expectedException InvalidArgumentException
 	 */
     public function testBuildCollection_badTitle() {
         $this->site->buildLiveCommentsCollection("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com");
     }
 
     /**
-     * @covers Livefyre\Core\Collection::buildCollectionMetaToken
+     * @covers Livefyre\Validator\CollectionValidator::validate
      * @expectedException InvalidArgumentException
      */
     public function testBuildCollection_badType() {

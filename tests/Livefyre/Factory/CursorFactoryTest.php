@@ -24,9 +24,9 @@ class CursorFactoryTest extends \PHPUnit_Framework_TestCase {
         $cursor = CursorFactory::getPersonalStreamCursor($this->network, $this->config->USER_ID);
         $this->assertEquals($psResource, $cursor->getData()->getResource());
 
-        $cursor = CursorFactory::getPersonalStreamCursor($this->network, $this->config->USER_ID, LIMIT, time());
+        $cursor = CursorFactory::getPersonalStreamCursor($this->network, $this->config->USER_ID, $this::LIMIT, time());
         $this->assertEquals($psResource, $cursor->getData()->getResource());
-        $this->assertEquals(LIMIT, $cursor->getData()->getLimit());
+        $this->assertEquals($this::LIMIT, $cursor->getData()->getLimit());
     }
 
     public function testTopicStreamCursor() {
@@ -38,8 +38,8 @@ class CursorFactoryTest extends \PHPUnit_Framework_TestCase {
         $cursor = CursorFactory::getTopicStreamCursor($this->network, $topic);
         $this->assertEquals($tsResource, $cursor->getData()->getResource());
 
-        $cursor = CursorFactory::getTopicStreamCursor($this->network, $topic, LIMIT, time());
+        $cursor = CursorFactory::getTopicStreamCursor($this->network, $topic, $this::LIMIT, time());
         $this->assertEquals($tsResource, $cursor->getData()->getResource());
-        $this->assertEquals(LIMIT, $cursor->getData()->getLimit());
+        $this->assertEquals($this::LIMIT, $cursor->getData()->getLimit());
     }
 }
