@@ -18,11 +18,17 @@ class LivefyreUtils {
         }
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public static function startsWith($haystack, $needle) {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public static function endsWith($haystack, $needle) {
         $length = strlen($needle);
         if ($length == 0) {
@@ -35,6 +41,6 @@ class LivefyreUtils {
     public static function isValidUrl($url) {
         $IDNA = new IDNA(array('idn_version' => 2008));
 
-        return filter_var($IDNA->encode($url), FILTER_VALIDATE_URL) === false;
+        return filter_var($IDNA->encode($url), FILTER_VALIDATE_URL) !== false;
     }
 }

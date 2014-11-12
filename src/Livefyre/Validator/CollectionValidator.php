@@ -26,7 +26,7 @@ class CollectionValidator {
         $url = $data->getUrl();
         if (empty($url)) {
             $reason .= "\n URL is null or blank.";
-        } elseif (LivefyreUtils::isValidUrl($data->getUrl())) {
+        } elseif (!LivefyreUtils::isValidUrl($data->getUrl())) {
             $reason .= "\n URL is not a valid url. see http://www.ietf.org/rfc/rfc2396.txt.";
         }
 
