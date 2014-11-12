@@ -44,7 +44,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Livefyre\Livefyre::getNetwork
+     * @covers Livefyre\Validator\NetworkValidator::validate
      * @expectedException InvalidArgumentException
      */
     public function testInit_nullName() {
@@ -52,7 +52,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Livefyre\Livefyre::getNetwork
+     * @covers Livefyre\Validator\NetworkValidator::validate
      * @expectedException InvalidArgumentException
      */
     public function testInit_badName() {
@@ -60,7 +60,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Livefyre\Livefyre::getNetwork
+     * @covers Livefyre\Validator\NetworkValidator::validate
      * @expectedException InvalidArgumentException
      */
     public function testInit_badKey() {

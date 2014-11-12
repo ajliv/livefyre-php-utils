@@ -30,7 +30,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * @expectedException InvalidArgumentException
      */
     public function testBuildCollection_badParam() {
-        $this->site->buildLiveCommentsCollection(NULL, NULL, NULL);
+        $this->site->buildCollection(NULL, NULL, NULL, NULL);
     }
 
 	/**

@@ -46,7 +46,7 @@ class SiteTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Livefyre\Core\Network::getSite
+     * @covers Livefyre\Validator\SiteValidator::validate
      * @expectedException InvalidArgumentException
      */
     public function testInit_badID() {
@@ -54,7 +54,7 @@ class SiteTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @covers Livefyre\Core\Network::getSite
+     * @covers Livefyre\Validator\SiteValidator::validate
      * @expectedException InvalidArgumentException
      */
     public function testInit_badKey() {
