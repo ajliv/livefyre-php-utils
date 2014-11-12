@@ -13,72 +13,7 @@ If using Composer, add this to your composer.json:
         "livefyre/livefyre-php-utils": "1.3.3"
     }
 
-## Usage
-
-Instantiating a network object:
-
-```php
-$network = Livefyre::getNetwork("networkName", "networkKey");
-```
-
-Building a Livefyre token:
-
-```php
-$network->buildLivefyreToken();
-```
-
-Building a user auth token:
-
-```php
-$network->buildUserAuthToken("userId", "displayName", expires);
-```
-
-To validate a Livefyre token:
-
-```php
-$network->validateLivefyreToken("lfToken");
-```
-
-To send Livefyre a user sync url and then have Livefyre pull user data from that url:
-
-```php
-$network->setUserSyncUrl("urlTemplate");
-$network->syncUser("userId");
-```
-
-Instantiating a site object:
-
-```php
-$site = $network->getSite("siteId", "siteKey");
-```
-
-Building a collection meta token:
-*The {options} argument is optional.*
-
-```php
-$site->buildCollectionMetaToken("title", "articleId", "url", {options});
-```
-
-Building a checksum:
-*The 'tags' argument is optional.*
-
-```php
-$site->buildChecksum("title", "url", "tags");
-```
-
-To retrieve content collection data:
-
-```php
-$site->getCollectionContent("articleId");
-```
-
-To get a content collection's id:
-
-```php
-$site->getCollectionId("articleId");
-```
-
-## Additional Documentation
+## Documentation
 
 Located [here](http://answers.livefyre.com/developers/libraries).
 

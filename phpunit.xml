@@ -8,6 +8,12 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src/</directory>
+            <exclude>
+                <directory suffix=".php">./src/Livefyre/Exceptions/</directory>
+                <file>./src/Livefyre/Utils/IDNA.php</file>
+                <file>./src/Livefyre/Utils/JWT.php</file>
+                <file>./src/Livefyre/Utils/BasicEnum.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <logging>
