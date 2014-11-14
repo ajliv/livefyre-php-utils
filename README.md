@@ -3,14 +3,14 @@
 
 Livefyre's official library for common server-side tasks necessary for getting Livefyre apps (comments, reviews, etc.) working on your website.
 
-Works with PHP5.
+Works with PHP 5.3+.
 
 ## Installation
 
 If using Composer, add this to your composer.json:
 
 	"require": {
-        "livefyre/livefyre-php-utils": "1.3.3"
+        "livefyre/livefyre-php-utils": "2.0.0"
     }
 
 ## Documentation

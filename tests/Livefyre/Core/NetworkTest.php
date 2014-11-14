@@ -14,7 +14,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
     public function testApi() {
         $network = Livefyre::getNetwork($this->config->NETWORK_NAME, $this->config->NETWORK_KEY);
         $network->setUserSyncUrl("url/{id}");
-        $network->syncUser("username");
+        $network->syncUser("user-name_123.BLAH");
     }
 
     /**
@@ -32,7 +32,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
      */
     public function testNetworkBuildUserAuthToken() {
         $network = Livefyre::getNetwork($this->config->NETWORK_NAME, $this->config->NETWORK_KEY);
-        $network->buildUserAuthToken("fawe-f-fawef.", "test", "test");
+        $network->buildUserAuthToken("fawe-f@-fawef.", "test", "test");
     }
 
     /**

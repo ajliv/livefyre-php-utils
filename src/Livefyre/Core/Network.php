@@ -51,7 +51,7 @@ class Network extends Core {
 	}
 
 	public function buildUserAuthToken($userId, $displayName, $expires) {
-		if (!ctype_alnum($userId)) {
+		if (!preg_match("/^[a-zA-Z0-9_\\.-]+$/", $userId)) {
 			throw new \InvalidArgumentException("userId must be alphanumeric");
 		}
 
