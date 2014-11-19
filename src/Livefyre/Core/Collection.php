@@ -26,15 +26,32 @@ class Collection extends Core {
     }
 
     public function createOrUpdate() {
+        $wp = false;
+        if (function_exists("wp_remote_post")) {
+            $wp = true;
+        }
         $response = $this->invokeCollectionApi("create");
-        if ($response->status_code === 200) {
-            $this->getData()->setId(json_decode($response->body)->{"data"}->{"collectionId"});
-            return $this;
-        } elseif ($response->status_code === 409) {
-            $response = $this->invokeCollectionApi("update");
-
-            if ($response->status_code === 200) {
+        if ($wp) {
+            if ($response["response"]["code"] === 200) {
+                $this->getData()->setId(json_decode($response["body"])->{"data"}->{"collectionId"});
                 return $this;
+            } elseif ($response["response"]["code"] === 409) {
+                $response = $this->invokeCollectionApi("update");
+
+                if ($response["response"]["code"] === 200) {
+                    return $this;
+                }
+            }
+        } else {
+            if ($response->status_code === 200) {
+                $this->getData()->setId(json_decode($response->body)->{"data"}->{"collectionId"});
+                return $this;
+            } elseif ($response->status_code === 409) {
+                $response = $this->invokeCollectionApi("update");
+
+                if ($response->status_code === 200) {
+                    return $this;
+                }
             }
         }
         throw new ApiException($response->status_code);
@@ -68,7 +85,7 @@ class Collection extends Core {
         if ($response->status_code >= 400) {
             throw new ApiException($response->status_code);
         }
-        return json_decode($response->body);
+        return json_decode($response);
     }
 
     private function invokeCollectionApi($method) {

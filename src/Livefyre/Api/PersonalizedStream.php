@@ -296,6 +296,6 @@ class PersonalizedStream {
 	}
 
 	private static function getDataFromResponse($response) {
-		return json_decode($response->body)->{"data"};
+		return json_decode($response)->{"data"};
 	}
 }
