@@ -249,7 +249,7 @@ class PersonalizedStream {
 
 		$response = Client::GET($url, self::getHeaders($cursor->getCore()));
 
-		return json_decode($response->body);
+		return json_decode($response);
 	}
 
 	/* Helper Methods */

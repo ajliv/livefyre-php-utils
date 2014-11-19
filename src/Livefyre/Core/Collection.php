@@ -81,10 +81,6 @@ class Collection extends Core {
             base64_encode($this->getData()->getArticleId()));
 
         $response = Client::GET($url);
-
-        if ($response->status_code >= 400) {
-            throw new ApiException($response->status_code);
-        }
         return json_decode($response);
     }
 
