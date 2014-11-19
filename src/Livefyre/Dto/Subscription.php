@@ -1,7 +1,7 @@
 <?php
-namespace Livefyre\Entity;
 
-use Livefyre\Entity\SubscriptionType;
+namespace Livefyre\Dto;
+
 
 class Subscription {
 
@@ -28,24 +28,31 @@ class Subscription {
 	public function getTo() {
 		return $this->to;
 	}
+
 	public function setTo($to) {
 		$this->to = $to;
 	}
+
 	public function getBy() {
 		return $this->by;
 	}
+
 	public function setBy($by) {
 		$this->by = $by;
 	}
+
 	public function getType() {
 		return $this->type;
 	}
+
 	public function setType($type) {
 		$this->type = $type;
 	}
+
 	public function getCreatedAt() {
 		return $this->createdAt;
 	}
+
 	public function setCreatedAt($createdAt) {
 		$this->createdAt = $createdAt;
 	}

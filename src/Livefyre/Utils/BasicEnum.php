@@ -1,4 +1,5 @@
 <?php
+
 namespace Livefyre\Utils;
 
 abstract class BasicEnum {
@@ -6,7 +7,7 @@ abstract class BasicEnum {
 
     private static function getConstants() {
         if (self::$constCache === null) {
-            $reflect = new ReflectionClass(get_called_class());
+            $reflect = new \ReflectionClass(get_called_class());
             self::$constCache = $reflect->getConstants();
         }
 

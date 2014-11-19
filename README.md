@@ -1,84 +1,45 @@
 # Livefyre PHP Utility Classes
 [![PHP version](https://badge.fury.io/ph/Livefyre%2Flivefyre-php-utils.png)](http://badge.fury.io/ph/Livefyre%2Flivefyre-php-utils)
+[![Circle CI](https://circleci.com/gh/Livefyre/livefyre-php-utils.png?style=badge)](https://circleci.com/gh/Livefyre/livefyre-php-utils)
+[![Coverage Status](https://coveralls.io/repos/Livefyre/livefyre-php-utils/badge.png)](https://coveralls.io/r/Livefyre/livefyre-php-utils)
 
 Livefyre's official library for common server-side tasks necessary for getting Livefyre apps (comments, reviews, etc.) working on your website.
 
-Works with PHP5.
+Works with PHP 5.3+.
 
-## Installation
+## Installation with Composer
 
-If using Composer, add this to your composer.json:
+You can install the library via Composer[http://getcomposer.org/]. Add this to your +composer.json+:
 
-	"require": {
-        "livefyre/livefyre-php-utils": "1.3.3"
+    {
+      "require": {
+        "livefyre/livefyre-php-utils": "2.*"
+      }
     }
 
-## Usage
+Then install via:
 
-Instantiating a network object:
+    composer.phar install
 
-```php
-$network = Livefyre::getNetwork("networkName", "networkKey");
-```
+To use the library, either user Composer's autoload[https://getcomposer.org/doc/00-intro.md#autoloading]:
 
-Building a Livefyre token:
+    require_once('vendor/autoload.php');
 
-```php
-$network->buildLivefyreToken();
-```
+Or manually:
 
-Building a user auth token:
+    require_once('/path/to/vendor/livefyre/livefyre-php-utils/src/Livefyre.php');
 
-```php
-$network->buildUserAuthToken("userId", "displayName", expires);
-```
+## Installation without Composer
 
-To validate a Livefyre token:
+Obtain the latest version of the Livefyre PHP library with:
 
-```php
-$network->validateLivefyreToken("lfToken");
-```
+	git clone https://github.com/Livefyre/livefyre-php-utils
 
-To send Livefyre a user sync url and then have Livefyre pull user data from that url:
+To use the library, add the following to your PHP script:
 
-```php
-$network->setUserSyncUrl("urlTemplate");
-$network->syncUser("userId");
-```
+	require_once("/path/to/livefyre-php-utils/src/Livefyre.php");
 
-Instantiating a site object:
-
-```php
-$site = $network->getSite("siteId", "siteKey");
-```
-
-Building a collection meta token:
-*The {options} argument is optional.*
-
-```php
-$site->buildCollectionMetaToken("title", "articleId", "url", {options});
-```
-
-Building a checksum:
-*The 'tags' argument is optional.*
-
-```php
-$site->buildChecksum("title", "url", "tags");
-```
-
-To retrieve content collection data:
-
-```php
-$site->getCollectionContent("articleId");
-```
-
-To get a content collection's id:
-
-```php
-$site->getCollectionId("articleId");
-```
-
-## Additional Documentation
+## Documentation
 
 Located [here](http://answers.livefyre.com/developers/libraries).
 

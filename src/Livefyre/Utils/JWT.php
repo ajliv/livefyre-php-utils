@@ -1,4 +1,5 @@
 <?php
+
 namespace Livefyre\Utils;
 /**
  * JSON Web Token implementation, based on this spec:
@@ -22,7 +23,7 @@ namespace Livefyre\Utils;
  * @author   Neuman Vong <neuman@twilio.com>
  * @author   Anant Narayanan <anant@php.net>
  * @license  http://opensource.org/licenses/BSD-3-Clause 3-clause BSD
- * @link     https://github.com/firebase/php-jwt
+ * @link     https://github.com/firebase/php-jwt/**
  */
 class JWT
 {

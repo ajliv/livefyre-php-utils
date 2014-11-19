@@ -1,0 +1,14 @@
+## Customize dependencies
+dependencies:
+  pre:
+    - sed -i 's/^;//' ~/.phpenv/versions/$(phpenv global)/etc/conf.d/xdebug.ini
+
+## Customize test commands
+test:
+  override:
+    - phpunit -c phpunit.xml
+    - php vendor/bin/coveralls
+
+machine:
+  php:
+    version: 5.3.3

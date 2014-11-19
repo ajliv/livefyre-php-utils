@@ -1,4 +1,5 @@
 <?php
+
 namespace Livefyre\Utils;
 // {{{ license
 
