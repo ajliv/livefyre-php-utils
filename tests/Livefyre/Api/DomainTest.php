@@ -16,7 +16,7 @@ class DomainTest extends \PHPUnit_Framework_TestCase {
         $this->config->setPropValues("prod");
         $this->network = Livefyre::getNetwork($this->config->NETWORK_NAME, $this->config->NETWORK_KEY);
         $this->site = $this->network->getSite($this->config->SITE_ID, $this->config->SITE_KEY);
-        $this->collection = $this->site->buildLiveCommentsCollection(
+        $this->collection = $this->site->buildCommentsCollection(
             $this->config->TITLE, $this->config->ARTICLE_ID, $this->config->URL);
     }
 

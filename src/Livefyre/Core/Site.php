@@ -21,16 +21,16 @@ class Site extends Core {
         return new Site($network, SiteValidator::validate($data));
     }
 
-    public function buildLiveCommentsCollection($title, $articleId, $url) {
-        return $this->buildCollection(CollectionType::LIVECOMMENTS, $title, $articleId, $url);
+    public function buildCommentsCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::COMMENTS, $title, $articleId, $url);
     }
 
-    public function buildLiveBlogCollection($title, $articleId, $url) {
-        return $this->buildCollection(CollectionType::LIVEBLOG, $title, $articleId, $url);
+    public function buildBlogCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::BLOG, $title, $articleId, $url);
     }
 
-    public function buildLiveChatCollection($title, $articleId, $url) {
-        return $this->buildCollection(CollectionType::LIVECHAT, $title, $articleId, $url);
+    public function buildChatCollection($title, $articleId, $url) {
+        return $this->buildCollection(CollectionType::CHAT, $title, $articleId, $url);
     }
 
     public function buildCountingCollection($title, $articleId, $url) {

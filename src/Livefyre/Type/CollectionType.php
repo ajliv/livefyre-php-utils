@@ -10,7 +10,7 @@ abstract class CollectionType extends BasicEnum {
     const SIDENOTES = "sidenotes";
     const RATINGS = "ratings";
     const COUNTING = "counting";
-    const LIVEBLOG = "liveblog";
-    const LIVECHAT = "livechat";
-    const LIVECOMMENTS = "livecomments";
+    const BLOG = "liveblog";
+    const CHAT = "livechat";
+    const COMMENTS = "livecomments";
 }

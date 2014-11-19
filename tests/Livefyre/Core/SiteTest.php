@@ -20,14 +20,14 @@ class SiteTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testBuildCollections() {
-        $collection = $this->site->buildLiveCommentsCollection($this->config->TITLE, $this->config->ARTICLE_ID, $this->config->URL);
-        $this->assertEquals(CollectionType::LIVECOMMENTS, $collection->getData()->getType());
+        $collection = $this->site->buildCommentsCollection($this->config->TITLE, $this->config->ARTICLE_ID, $this->config->URL);
+        $this->assertEquals(CollectionType::COMMENTS, $collection->getData()->getType());
 
-        $collection = $this->site->buildLiveBlogCollection($this->config->TITLE, $this->config->ARTICLE_ID, $this->config->URL);
-        $this->assertEquals(CollectionType::LIVEBLOG, $collection->getData()->getType());
+        $collection = $this->site->buildBlogCollection($this->config->TITLE, $this->config->ARTICLE_ID, $this->config->URL);
+        $this->assertEquals(CollectionType::BLOG, $collection->getData()->getType());
 
-        $collection = $this->site->buildLiveChatCollection($this->config->TITLE, $this->config->ARTICLE_ID, $this->config->URL);
-        $this->assertEquals(CollectionType::LIVECHAT, $collection->getData()->getType());
+        $collection = $this->site->buildChatCollection($this->config->TITLE, $this->config->ARTICLE_ID, $this->config->URL);
+        $this->assertEquals(CollectionType::CHAT, $collection->getData()->getType());
 
         $collection = $this->site->buildCountingCollection($this->config->TITLE, $this->config->ARTICLE_ID, $this->config->URL);
         $this->assertEquals(CollectionType::COUNTING, $collection->getData()->getType());

@@ -19,7 +19,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     public function testApi() {
         $name = "PHPCreateCollection" . time();
 
-        $collection = $this->site->buildLiveCommentsCollection($name, $name, "http://answers.livefyre.com/PHP");
+        $collection = $this->site->buildCommentsCollection($name, $name, "http://answers.livefyre.com/PHP");
         $collection->createOrUpdate();
 
         $id = $collection->getCollectionContent()->{"collectionSettings"}->{"collectionId"};
@@ -38,7 +38,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * @expectedException InvalidArgumentException
 	 */
     public function testBuildCollection_badUrl() {
-    	$this->site->buildLiveCommentsCollection("title", "articleId", "url");
+    	$this->site->buildCommentsCollection("title", "articleId", "url");
     }
 
 	/**
@@ -46,7 +46,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
      * @expectedException InvalidArgumentException
 	 */
     public function testBuildCollection_badTitle() {
-        $this->site->buildLiveCommentsCollection("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com");
+        $this->site->buildCommentsCollection("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com");
     }
 
     /**
@@ -58,7 +58,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testBuildCollectionMetaToken() {
-        $collection = $this->site->buildLiveCommentsCollection("title", "articleId", "https://www.url.com");
+        $collection = $this->site->buildCommentsCollection("title", "articleId", "https://www.url.com");
         $this->assertNotNull($collection->buildCollectionMetaToken());
 
         $collection->getData()->setTags("tags");
@@ -70,7 +70,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testBuildChecksum() {
-        $collection = $this->site->buildLiveCommentsCollection("title", "articleId", "http://livefyre.com");
+        $collection = $this->site->buildCommentsCollection("title", "articleId", "http://livefyre.com");
         $collection->getData()->setTags("tags");
 
         $checksum = $collection->buildChecksum();
@@ -79,7 +79,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testNetworkIssued() {
-        $collection = $this->site->buildLiveCommentsCollection("title", "articleId", "http://livefyre.com");
+        $collection = $this->site->buildCommentsCollection("title", "articleId", "http://livefyre.com");
         $this->assertFalse($collection->isNetworkIssued());
 
         $collection->getData()->setTopics(array(Topic::create($this->site, "ID", "LABEL")));

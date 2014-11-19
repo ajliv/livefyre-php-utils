@@ -59,7 +59,7 @@ class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
     public function testCollectionTopicApi() {
         $site = $this->site;
         $name = "PHP PSSTREAM TEST " . time();
-        $collection = $this->site->buildLiveCommentsCollection($name, $name, $this->config->URL);
+        $collection = $this->site->buildCommentsCollection($name, $name, $this->config->URL);
         $collection->createOrUpdate();
 
         PersonalizedStream::getCollectionTopics($collection);
@@ -73,7 +73,7 @@ class PersonalizedStreamTest extends \PHPUnit_Framework_TestCase {
         PersonalizedStream::replaceCollectionTopics($collection, array($topic1));
 
         $name = "PHP PSSTREAM TEST " . time();
-        $collection2 = $this->site->buildLiveCommentsCollection($name, $name, $this->config->URL);
+        $collection2 = $this->site->buildCommentsCollection($name, $name, $this->config->URL);
         $collection2->getData()->setTopics(array($topic1, $topic2));
         $collection2->createOrUpdate();
 
