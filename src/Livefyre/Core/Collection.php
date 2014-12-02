@@ -33,12 +33,13 @@ class Collection extends Core {
         $response = $this->invokeCollectionApi("create");
         if ($wp) {
             if ($response["response"]["code"] === 200) {
-                $this->getData()->setId(json_decode($response->body)->{"data"}->{"collectionId"});
+                $this->getData()->setId(json_decode($response["body"])->{"data"}->{"collectionId"});
                 return $this;
             } elseif ($response["response"]["code"] === 409) {
                 $response = $this->invokeCollectionApi("update");
 
                 if ($response["response"]["code"] === 200) {
+                    $this->getData()->setId(json_decode($response["body"])->{"data"}->{"collectionId"});
                     return $this;
                 }
             }
