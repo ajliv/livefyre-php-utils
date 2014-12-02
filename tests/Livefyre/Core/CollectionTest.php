@@ -5,6 +5,7 @@ namespace Livefyre;
 
 use Livefyre\Dto\Topic;
 use Livefyre\Utils\JWT;
+use Zend\Filter\Null;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase {
     private $config;
@@ -23,6 +24,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $collection->createOrUpdate();
 
         $id = $collection->getCollectionContent()->{"collectionSettings"}->{"collectionId"};
+        $this->assertEquals($id, $collection->getData()->getId());
+
+        $id = $collection->getData()->getId();
+        $collection->getData()->setId(NULL);
+        $collection->createOrUpdate();
+
         $this->assertEquals($id, $collection->getData()->getId());
     }
 
