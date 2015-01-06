@@ -19,7 +19,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers Livefyre\Core\Network::setUserSyncUrl
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testNetworkUserSyncUrl() {
         $network = Livefyre::getNetwork($this->config->NETWORK_NAME, $this->config->NETWORK_KEY);
@@ -28,7 +28,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers Livefyre\Core\Network::buildUserAuthToken
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testNetworkBuildUserAuthToken() {
         $network = Livefyre::getNetwork($this->config->NETWORK_NAME, $this->config->NETWORK_KEY);
@@ -44,8 +44,17 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
+     * @covers Livefyre\Core\Network::validateLivefyreToken
+     * @expectedException \InvalidArgumentException
+     */
+    public function testNetworkValidateLivefyreToken_fail() {
+        $network = Livefyre::getNetwork($this->config->NETWORK_NAME, $this->config->NETWORK_KEY);
+        $network->validateLivefyreToken("");
+    }
+
+    /**
      * @covers Livefyre\Validator\NetworkValidator::validate
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInit_nullName() {
         Livefyre::getNetwork(NULL, $this->config->SITE_KEY);
@@ -53,7 +62,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers Livefyre\Validator\NetworkValidator::validate
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInit_badName() {
         Livefyre::getNetwork("livefyre", $this->config->SITE_KEY);
@@ -61,7 +70,7 @@ class NetworkTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers Livefyre\Validator\NetworkValidator::validate
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInit_badKey() {
         Livefyre::getNetwork($this->config->SITE_ID, "");

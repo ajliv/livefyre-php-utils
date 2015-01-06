@@ -34,7 +34,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testBuildCollection_badParam() {
         $this->site->buildCollection(NULL, NULL, NULL, NULL);
@@ -42,7 +42,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
 
 	/**
      * @covers Livefyre\Validator\CollectionValidator::validate
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
 	 */
     public function testBuildCollection_badUrl() {
     	$this->site->buildCommentsCollection("title", "articleId", "url");
@@ -50,7 +50,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
 
 	/**
      * @covers Livefyre\Validator\CollectionValidator::validate
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
 	 */
     public function testBuildCollection_badTitle() {
         $this->site->buildCommentsCollection("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456", "articleId", "http://www.url.com");
@@ -58,7 +58,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers Livefyre\Validator\CollectionValidator::validate
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testBuildCollection_badType() {
         $this->site->buildCollection("bad type", "title", "articleId", "http://livefyre.com");

@@ -66,7 +66,15 @@ class Network extends Core {
 	}
 
 	public function validateLivefyreToken($lfToken) {
-		$tokenAttributes = JWT::decode($lfToken, $this->getData()->getKey());
+		try {
+			$tokenAttributes = JWT::decode($lfToken, $this->getData()->getKey());
+		} catch (\Exception $e) {
+			if ($e instanceof \DomainException OR $e instanceof \UnexpectedValueException) {
+				throw new \InvalidArgumentException("problem with your livefyre jwt", 0, $e);
+			} else {
+				throw $e;
+			}
+		}
 
 		return $tokenAttributes->domain == $this->getData()->getName()
 			&& $tokenAttributes->user_id == self::DEFAULT_USER

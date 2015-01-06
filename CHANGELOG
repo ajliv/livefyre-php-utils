@@ -1,3 +1,8 @@
+=== 2.0.2 2014-01-05
+
+* Fixed the exceptions being thrown by the JWT class.
+* Added an additional check to validateLivefyreToken().
+
 === 2.0.1 2014-12-01
 
 * Updated Collection->createOrUpdate() to update id if updating.
