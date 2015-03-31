@@ -3,7 +3,6 @@
 namespace Livefyre\Core;
 
 
-use Livefyre\Exceptions\ApiException;
 use Livefyre\Exceptions\LivefyreException;
 use Livefyre\Model\NetworkData;
 use Livefyre\Routing\Client;

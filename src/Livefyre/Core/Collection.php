@@ -26,36 +26,18 @@ class Collection extends Core {
     }
 
     public function createOrUpdate() {
-        $wp = false;
-        if (function_exists("wp_remote_post")) {
-            $wp = true;
-        }
-        $response = $this->invokeCollectionApi("create");
-        if ($wp) {
-            if ($response["response"]["code"] === 200) {
-                $this->getData()->setId(json_decode($response["body"])->{"data"}->{"collectionId"});
-                return $this;
-            } elseif ($response["response"]["code"] === 409) {
+        try {
+            $response = $this->invokeCollectionApi("create");
+            $this->getData()->setId(json_decode($response)->{"data"}->{"collectionId"});
+            return $this;
+        } catch (ApiException $e) {
+            if ($e->getCode() == 409) {
                 $response = $this->invokeCollectionApi("update");
-
-                if ($response["response"]["code"] === 200) {
-                    $this->getData()->setId(json_decode($response["body"])->{"data"}->{"collectionId"});
-                    return $this;
-                }
-            }
-        } else {
-            if ($response->status_code === 200) {
-                $this->getData()->setId(json_decode($response->body)->{"data"}->{"collectionId"});
+                $this->getData()->setId(json_decode($response)->{"data"}->{"collectionId"});
                 return $this;
-            } elseif ($response->status_code === 409) {
-                $response = $this->invokeCollectionApi("update");
-                if ($response->status_code === 200) {
-                    $this->getData()->setId(json_decode($response->body)->{"data"}->{"collectionId"});
-                    return $this;
-                }
             }
+            throw $e;
         }
-        throw new ApiException($response->status_code);
     }
 
     public function buildCollectionMetaToken() {
@@ -97,7 +79,7 @@ class Collection extends Core {
             "Accepts" => "application/json"
         );
 
-        return Client::POST($uri . "?sync=1", $headers, $data, false);
+        return Client::POST($uri . "?sync=1", $headers, $data);
     }
 
     public function isNetworkIssued() {

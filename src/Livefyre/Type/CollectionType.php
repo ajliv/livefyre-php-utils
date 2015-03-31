@@ -3,7 +3,7 @@
 namespace Livefyre\Type;
 
 
-use Livefyre\Utils\BasicEnum;
+use Livefyre\Pattern\BasicEnum;
 
 abstract class CollectionType extends BasicEnum {
     const REVIEWS = "reviews";

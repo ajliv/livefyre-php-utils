@@ -19,7 +19,7 @@ class ApiException extends LivefyreException {
     );
 
     public function __construct($statusCode) {
-        parent::__construct($this->apiStatus[$statusCode]);
+        parent::__construct($this->apiStatus[$statusCode], $statusCode);
     }
 
     public function __toString() {

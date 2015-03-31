@@ -3,7 +3,7 @@
 namespace Livefyre\Type;
 
 
-use Livefyre\Utils\BasicEnum;
+use Livefyre\Pattern\BasicEnum;
 
 abstract class SubscriptionType extends BasicEnum {
     const personalStream = 1;

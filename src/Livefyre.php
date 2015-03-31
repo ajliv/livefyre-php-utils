@@ -4,7 +4,9 @@ if (!function_exists('json_decode')) {
 }
 require(dirname(__FILE__) . '/Livefyre/Livefyre.php');
 
-require(dirname(__FILE__) . '/Livefyre/Utils/BasicEnum.php');
+require(dirname(__FILE__) . '/Livefyre/Pattern/BasicEnum.php');
+require(dirname(__FILE__) . '/Livefyre/Pattern/Singleton.php');
+
 require(dirname(__FILE__) . '/Livefyre/Utils/IDNA.php');
 require(dirname(__FILE__) . '/Livefyre/Utils/JWT.php');
 require(dirname(__FILE__) . '/Livefyre/Utils/LivefyreUtils.php');
@@ -32,6 +34,9 @@ require(dirname(__FILE__) . '/Livefyre/Model/CursorData.php');
 require(dirname(__FILE__) . '/Livefyre/Model/NetworkData.php');
 require(dirname(__FILE__) . '/Livefyre/Model/SiteData.php');
 
+require(dirname(__FILE__) . '/Livefyre/Routing/DefaultClient.php');
+require(dirname(__FILE__) . '/Livefyre/Routing/WPClient.php');
+require(dirname(__FILE__) . '/Livefyre/Routing/ClientFactory.php');
 require(dirname(__FILE__) . '/Livefyre/Routing/Client.php');
 
 require(dirname(__FILE__) . '/Livefyre/Type/CollectionType.php');

@@ -1,7 +1,12 @@
 <?php
 
-namespace Livefyre\Utils;
+namespace Livefyre\Pattern;
 
+/**
+ * Class BasicEnum
+ * from: http://stackoverflow.com/a/254543/967967
+ * @package Livefyre\Pattern
+ */
 abstract class BasicEnum {
     private static $constCache = null;
 

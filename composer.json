@@ -1,7 +1,7 @@
 {
     "name": "livefyre/livefyre-php-utils",
     "type": "library",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "description": "Livefyre PHP utility classes",
     "keywords": ["livefyre","api"],
     "homepage": "http://github.com/livefyre/livefyre-php-utils",
@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": ">=5.2",
+        "php": ">=5.3",
         "ext-json": "*",
         "rmccue/requests": ">=1.0"
     },

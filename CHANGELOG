@@ -1,4 +1,12 @@
-=== 2.0.2 2014-01-05
+=== 2.0.3 2015-03-30
+
+* Added option of swapping out the api client to custom types.
+* Fixed PHP dependency typo. Should have been 5.3, not 5.2.
+* Changed the way Collection->createOrUpdate works. Base logic is the same, but interactions between class and client now differ.
+* Moved BasicEnum into the Patterns package.
+* Added sources for patterns.
+
+=== 2.0.2 2015-01-05
 
 * Fixed the exceptions being thrown by the JWT class.
 * Added an additional check to validateLivefyreToken().
