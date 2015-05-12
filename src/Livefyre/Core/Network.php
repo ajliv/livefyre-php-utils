@@ -53,7 +53,7 @@ class Network extends Core {
 
 	public function buildUserAuthToken($userId, $displayName, $expires) {
 		if (!preg_match(self::ALPHA_DASH_UNDER_DOT_REGEX, $userId)) {
-			throw new \InvalidArgumentException(sprintf("userId is not alphanumeric. Ensure the following regex pattern is respected %s", SELF::ALPHA_DASH_UNDER_DOT_REGEX));
+			throw new \InvalidArgumentException(sprintf("userId is not alphanumeric. Ensure the following regex pattern is respected %s", self::ALPHA_DASH_UNDER_DOT_REGEX));
 		}
 
 		$token = array(
