@@ -3,9 +3,10 @@
 namespace Livefyre;
 
 
+use JWT;
+
+use Livefyre\Core\Core;
 use Livefyre\Dto\Topic;
-use Livefyre\Utils\JWT;
-use Zend\Filter\Null;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase {
     private $config;
@@ -71,7 +72,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase {
         $collection->getData()->setTags("tags");
 
         $token = $collection->buildCollectionMetaToken();
-        $decoded = JWT::decode($token, $this->config->SITE_KEY);
+        $decoded = JWT::decode($token, $this->config->SITE_KEY, array(Core::ENCRYPTION));
 
         $this->assertEquals("tags", $decoded->{"tags"});
     }

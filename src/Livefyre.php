@@ -8,7 +8,6 @@ require(dirname(__FILE__) . '/Livefyre/Pattern/BasicEnum.php');
 require(dirname(__FILE__) . '/Livefyre/Pattern/Singleton.php');
 
 require(dirname(__FILE__) . '/Livefyre/Utils/IDNA.php');
-require(dirname(__FILE__) . '/Livefyre/Utils/JWT.php');
 require(dirname(__FILE__) . '/Livefyre/Utils/LivefyreUtils.php');
 
 require(dirname(__FILE__) . '/Livefyre/Api/Domain.php');

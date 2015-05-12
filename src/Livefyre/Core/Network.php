@@ -3,21 +3,23 @@
 namespace Livefyre\Core;
 
 
+use JWT;
+
 use Livefyre\Exceptions\LivefyreException;
 use Livefyre\Model\NetworkData;
 use Livefyre\Routing\Client;
-use Livefyre\Utils\JWT;
 use Livefyre\Api\Domain;
 use Livefyre\Validator\NetworkValidator;
 
 class Network extends Core {
-	const DEFAULT_USER = "system";
-	const DEFAULT_EXPIRES = 86400;
+    const ALPHA_DASH_UNDER_DOT_REGEX = "/^[a-zA-Z0-9_\\.-]+$/";
+    const DEFAULT_EXPIRES = 86400;
+    const DEFAULT_USER = "system";
 
-	private $_data;
+    private $_data;
     private $_ssl;
 
-	public function __construct(NetworkData $data) {
+    public function __construct(NetworkData $data) {
 		$this->_data = $data;
 		$this->_ssl = true;
 	}
@@ -50,8 +52,8 @@ class Network extends Core {
 	}
 
 	public function buildUserAuthToken($userId, $displayName, $expires) {
-		if (!preg_match("/^[a-zA-Z0-9_\\.-]+$/", $userId)) {
-			throw new \InvalidArgumentException("userId must be alphanumeric");
+		if (!preg_match(self::ALPHA_DASH_UNDER_DOT_REGEX, $userId)) {
+			throw new \InvalidArgumentException(sprintf("userId is not alphanumeric. Ensure the following regex pattern is respected %s", SELF::ALPHA_DASH_UNDER_DOT_REGEX));
 		}
 
 		$token = array(
@@ -66,7 +68,7 @@ class Network extends Core {
 
 	public function validateLivefyreToken($lfToken) {
 		try {
-			$tokenAttributes = JWT::decode($lfToken, $this->getData()->getKey());
+			$tokenAttributes = JWT::decode($lfToken, $this->getData()->getKey(), array(Core::ENCRYPTION));
 		} catch (\Exception $e) {
 			if ($e instanceof \DomainException OR $e instanceof \UnexpectedValueException) {
 				throw new \InvalidArgumentException("problem with your livefyre jwt", 0, $e);

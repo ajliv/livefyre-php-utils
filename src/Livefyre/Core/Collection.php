@@ -2,10 +2,10 @@
 
 namespace Livefyre\Core;
 
+use JWT;
 
 use Livefyre\Model\CollectionData;
 use Livefyre\Exceptions\ApiException;
-use Livefyre\Utils\JWT;
 use Livefyre\Routing\Client;
 use Livefyre\Api\Domain;
 use Livefyre\Utils\LivefyreUtils;

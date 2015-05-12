@@ -1,3 +1,8 @@
+=== 2.0.4 2015-05-12
+
+* Switched back to using recommended third-party JWT library.
+* Updated dependencies.
+
 === 2.0.3 2015-03-30
 
 * Added option of swapping out the api client to custom types.

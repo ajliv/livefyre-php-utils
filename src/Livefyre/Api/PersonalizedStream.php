@@ -2,6 +2,7 @@
 
 namespace Livefyre\Api;
 
+use JWT;
 
 use Livefyre\Core\Collection;
 use Livefyre\Core\Core;
@@ -11,7 +12,6 @@ use Livefyre\Routing\Client;
 use Livefyre\Dto\Topic;
 use Livefyre\Dto\Subscription;
 use Livefyre\Type\SubscriptionType;
-use Livefyre\Utils\JWT;
 use Livefyre\Utils\LivefyreUtils;
 
 class PersonalizedStream {
@@ -24,8 +24,8 @@ class PersonalizedStream {
 	const SUBSCRIBER_URL_PATH = ":subscribers/";
 	const TIMELINE_PATH = "timeline/";
 
-	/* Topic API */
-	public static function getTopic(Core $core, $id) {
+    /* Topic API */
+    public static function getTopic(Core $core, $id) {
 		$url = self::getUrl($core) . Topic::generateUrn($core, $id);
 
 		$response = Client::GET($url, self::getHeaders($core));
@@ -176,7 +176,7 @@ class PersonalizedStream {
 	}
 
 	public static function addSubscriptions(Network $network, $userToken, $topics) {
-		$userId = JWT::decode($userToken, $network->getData()->getKey())->user_id;
+		$userId = JWT::decode($userToken, $network->getData()->getKey(), array(Core::ENCRYPTION))->user_id;
 		$userUrn = $network->getUrnForUser($userId);
 		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userUrn)));
 		$url = self::getSubscriptionUrl($network, $userUrn);
@@ -192,7 +192,7 @@ class PersonalizedStream {
 	}
 
 	public static function replaceSubscriptions(Network $network, $userToken, $topics) {
-		$userId = JWT::decode($userToken, $network->getData()->getKey())->user_id;
+		$userId = JWT::decode($userToken, $network->getData()->getKey(), array(Core::ENCRYPTION))->user_id;
 		$userUrn = $network->getUrnForUser($userId);
 		$data = json_encode(array("subscriptions" => self::buildSubscriptions($topics, $userUrn)));
 		$url = self::getSubscriptionUrl($network, $userUrn);
@@ -205,7 +205,7 @@ class PersonalizedStream {
 	}
 
 	public static function removeSubscriptions(Network $network, $userToken, $topics) {
-		$userId = JWT::decode($userToken, $network->getData()->getKey())->user_id;
+		$userId = JWT::decode($userToken, $network->getData()->getKey(), array(Core::ENCRYPTION))->user_id;
 		$userUrn = $network->getUrnForUser($userId);
 		$data = json_encode(array("delete" => self::buildSubscriptions($topics, $userUrn)));
 		$url = self::getSubscriptionUrl($network, $userUrn);
