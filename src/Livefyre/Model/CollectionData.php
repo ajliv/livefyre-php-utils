@@ -45,7 +45,10 @@ class CollectionData {
     }
 
     public function getId() {
-        return $this->id;
+        if (isset($this->id)) {
+            return $this->id;
+        }
+        throw new LivefyreException("Id not set. Call createOrUpdate() on the collection to set the id, or manually set it by calling setId(id) on this object.");
     }
 
     public function setId($id) {
